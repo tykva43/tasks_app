@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load slicestring %}
+{% block title %}{{ title }}{% endblock title %}
+{% block groups %}
+    <h2 class="title">Your Groups</h2>
+    <hr>
+    <h3 class="list_title">Private groups</h3>
+    {% if not private_groups %}
+        <p>There is no any private groups</p>
+    {% else %}
+        {% for group in private_groups %}
+            <a href="{% url 'group_chosen' group.id %}">
+                <div class="group" id="{{group.id}}">
+                    {{group.name}}
+                    <img id="{{group.id}}" data-tooltip="Edit group" class="control_button edit_button" src="{% static "imgs/edit.png" %}" onclick="sendEdit(event)">
+                    <img id="{{group.id}}" data-tooltip="Quit from the group" class="control_button remove_button" src="{% static "imgs/remove.png" %}" onclick="sendDelete(event)">
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'add_group' 'pri' %}">
+        <div class="add_button add_group" data-tooltip="Create private group">
+            <div class="vert_div"></div>
+            <div class="horiz_div"></div>
+        </div>
+    </a>
+    <br>
+    <hr>
+    <h3 class="list_title">Public groups</h3>
+    {% if not public_groups %}
+        <p>There is no any public groups</p>
+    {% else %}
+        {% for group in public_groups %}
+            <a href="{% url 'group_chosen' group.id %}">
+                <div class="group" id="{{group.id}}">
+                    {{group.name}}
+                    <img id="{{group.id}}" data-tooltip="Edit group" class="control_button edit_button" src="{% static "imgs/edit.png" %}" onclick="sendEdit(event)">
+                    <img id="{{group.id}}" data-tooltip="Quit from the group" class="control_button remove_button" src="{% static "imgs/remove.png" %}" onclick="sendDelete(event)">
+                </div>
+            </a>
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'add_group' 'pub' %}">
+        <div class="add_button add_group" data-tooltip="Create private group">
+            <div class="vert_div"></div>
+            <div class="horiz_div"></div>
+        </div>
+    </a>
+{% endblock groups %}
+
+{% block content %}
+    <div class="wrapper"><div class="expander">
+        <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+    </div><h2 class="title">Your Groups</h2>
+    </div>
+    <div class="groups_list">
+        {% if groups %}
+            {% for group in groups %}
+                <a href="{% url 'detail_group' group.id %}">
+                    <div class="group_elem">
+                        <div class="group_icon" style="background-color: {{group.icon_color}}">
+                            <div class="literal">{{group.name|slicestring:"0:1"}}</div>
+                        </div>
+                        <span class="group_title">{{group.name}}</span>
+                        <div class="group_menu">
+                            <img src="{% static "imgs/menu.png" %}">
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+<!--            <div class="note">There is no any group</div>-->
+        {% endif %}
+            <a href="{% url 'add_group' %}">
+                <div class="group_elem plus_group">
+                    <div class="group_icon">
+                        <div class="horiz_div"></div>
+                        <div class="vert_div"></div>
+                    </div>
+                    <div class="group_title">New Group</div>
+                    <div class="group_menu">
+                        <img src="{% static "imgs/menu.png" %}">
+                    </div>
+                </div>
+            </a>
+    </div>
+{% endblock content %}
+
+{% block add_button %}
+    {% if group_id %}
+    <a href="{% url 'add_task' %}">
+        <div class="add_button">
+           <div class="vert_div"></div>
+           <div class="horiz_div"></div>
+        </div>
+    </a>
+    {% endif %}
+{% endblock add_button %}

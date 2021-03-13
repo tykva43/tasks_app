@@ -1,0 +1,23 @@
+@media screen and (max-width: 1000px) {
+    .left_menu {
+        display: none;
+    }
+    .left_min_menu {
+        display: block;
+    }
+    .content {
+        margin-left: 80px;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .left_menu {
+        display: block;
+    }
+    .left_min_menu {
+        display: none;
+    }
+    .content {
+        margin-left: 300px;
+    }
+}

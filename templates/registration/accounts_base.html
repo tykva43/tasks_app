@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static "css/accounts_styles.css" %}"/>
+    <style>
+       @font-face {
+        font-family: YanoneKaffeesatz;
+        src: url("{% static "fonts/YanoneKaffeesatz.ttf" %}");
+       }
+    </style>
+    <link rel="shortcut icon" href="{% static "imgs/shortcut.png" %}" type="image/png"/>
+    <link href="{% static "js/toastr.scss" %}" rel="stylesheet"/>
+    <script src="{% static "js/toastr.js" %}"></script>
+</head>
+    <body class="accounts_body">
+        <div class="accounts_content">
+            {% block content %}{% endblock content %}
+        </div>
+    </body>
+</html>

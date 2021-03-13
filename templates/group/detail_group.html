@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{group.name}}{% endblock title %}
+
+{% block content %}
+    <div class="control_panel">
+        <a href="{% url 'list_group' %}">Back to Groups List</a>
+        <div class="memberships">
+            {% for i in [1, 2, 3] %}
+<!--                            todo: emit users icons -->
+            {% endfor %}
+        </div>
+    </div>
+    <h1 class="title">{{group.name}}</h1>
+
+{% endblock content %}

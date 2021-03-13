@@ -1,0 +1,100 @@
+/*  Accounts pages  */
+/* Form div */
+
+.warning, .errorlist {
+    color: rgb(139, 0, 0);
+}
+.form_div p a {
+    color: rgb(37, 73, 71);
+}
+.form_div form table tbody tr td input:active, .form_div input:active {
+    border-radius: 10px;
+}
+.form_div form table tbody tr td input:focus, .form_div input:focus {
+    border-radius: 10px;
+    outline: none;
+}
+.form_div form table {
+    border-spacing: 10px;
+}
+.form_div form table tbody tr td input, .form_div input {
+    border-radius: 10px;
+    color: rgb(37, 73, 71);
+    font-family: YanoneKaffeesatz;
+    font-size: 17px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border: 0;
+    height: 22px;
+}
+.form_div form table tbody tr td label, .form_div form table tbody tr th label, .form_div label, .form_div p   {
+    color: rgb(255, 255, 255);
+    font-size: 17px;
+    font-weight: normal;
+    margin-right: 10px;
+}
+.accounts_content .form_div {
+    position: relative;
+    margin: auto;
+    width: 280px;
+    text-align: center;
+}
+.accounts_content {
+    min-width: 270px;
+    margin: auto;
+    background-color: rgb(117, 200, 193);
+    border-radius: 40px;
+    font-family: YanoneKaffeesatz;
+    box-shadow: 0.4em 0.4em 5px rgba(74,145,142,0.8);
+    padding: 20px 40px 40px 40px;
+}
+.accounts_body {
+    height: 100vh;
+    display: flex;
+}
+.accounts_content p { text-align: center; }
+.accounts_content h2 {
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    text-align: center;
+}
+
+/* Buttons */
+.button {
+    min-width: 100px;
+    height: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 15px;
+    background-color: rgb(74, 145, 142);
+    color: rgb(255, 255, 255);
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.7s linear;
+    font-family: YanoneKaffeesatz;
+    font-size: 17px;
+    box-shadow: 0.4em 0.4em 10px rgba(37,73,71,0.8);
+    appearance: none;
+    border: 0;
+}
+.button:focus {
+    border: none;
+}
+.button:hover {
+    background-color: rgb(239, 98, 95);
+}
+.button:active {
+    border: none;
+}
+.helptext {
+    display: none;
+}
+.info {
+    color: rgb(0, 64, 0);
+}
+.errorlist li {
+    list-style-type: none;}
+.errorlist {
+    padding-left: 0px;
+
+}

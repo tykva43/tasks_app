@@ -1,0 +1,23 @@
+{% extends 'registration/accounts_base.html' %}
+ 
+{% block title %}Registration{% endblock %}
+ 
+{% block content %}
+    {% if info %}
+        <p class="info">{{info}}</p>
+    {% elif warning %}
+        <p class="warning">{{warning}}</p>
+    {% endif %}
+    <div class="form_div">
+        <h2>Registration</h2>
+        <form method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <button class="button" type="submit">Send</button>
+        </form>
+        <br>
+        <p>Already have account? Then <a href="{% url 'login' %}">login</a></p>
+    </div>
+{% endblock %}

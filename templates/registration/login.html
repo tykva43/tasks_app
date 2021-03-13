@@ -1,0 +1,42 @@
+{% extends "registration/accounts_base.html" %}
+{% block title %}Log in{% endblock title %}
+{% block content %}
+
+<div class="form_div">
+  {% if form.errors %}
+  <p class="warning">Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p class="warning">Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+  {% else %}
+    <p class="warning">Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+  <h2>Log in</h2>
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table>
+
+<tr>
+  <td>{{ form.username.label_tag }}</td>
+  <td>{{ form.username }}</td>
+</tr>
+
+<tr>
+  <td>{{ form.password.label_tag }}</td>
+  <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<button class="button" type="submit">Enter</button>
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{# Assumes you setup the password_reset view in your URLconf #}
+  <p><a href="{% url 'password_reset' %}">Lost password or login?</a></p>
+  <p>Still no account? Then <a href="{% url 'registration' %}">create</a> it</p>
+</div>
+{% endblock %}
