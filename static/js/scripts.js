@@ -61,7 +61,7 @@ function changeContentWidth() {
     var content_left_margin = left_menu_width;
 
     console.log('content_outer_width = ' + content_outer_width.toString())
-    console.log('left_menu_width = ' + left_menu_width.toString())
+    console.log('left_menu_width 9= ' + left_menu_width.toString())
     console.log('content_left_margin = ' + content_left_margin.toString())
 
     $(".content").css("width", ( $(window).width() - content_outer_width - left_menu_width - left_min_menu_width).toString()+ "px");

@@ -4,13 +4,13 @@
 
 {% block content %}
     <div class="control_panel">
-        <a href="{% url 'list_group' %}">Back to Groups List</a>
+
+        <a class="link" href="{% url 'list_group' %}"><img src="{% static "imgs/back.png" %}">&nbsp&nbspBack to Group list</a>
         <div class="memberships">
-            {% for i in [1, 2, 3] %}
-<!--                            todo: emit users icons -->
-            {% endfor %}
         </div>
     </div>
+    <br>
     <h1 class="title">{{group.name}}</h1>
+
 
 {% endblock content %}

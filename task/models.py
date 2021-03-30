@@ -25,12 +25,40 @@ class Membership(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
 
-class Task(models.Model):
+class TaskList(models.Model):
     title = models.CharField(max_length=100)
-    content = models.CharField(max_length=500)
+
+
+class Task(models.Model):
+    NOTIFICATION_TYPES = (
+        ('no', 'Don\'t remind me'),
+        ('before', 'Remind me in advance'),
+        ('on_time', 'Remind me on time')
+    )
+    PRIORITIES = (
+        ('no', 'No priority'),
+        ('high', 'High priority'),
+        ('medium', 'Medium priority'),
+        ('low', 'Low priority')
+    )
+
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=300, null=True)
+    deadline = models.DateTimeField(null=True)
+    notification = models.CharField(max_length=7, choices=NOTIFICATION_TYPES, default='no')
+    priority = models.CharField(max_length=6, choices=PRIORITIES, default='no')
+    is_favorite = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    group = models.ForeignKey('Group', on_delete=models.CASCADE, null=True)
+    completed_at = models.DateTimeField(null=True)
+
+    tasklist = models.ForeignKey('TaskList', on_delete=models.CASCADE, null=True)
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
+
+
+class Subtask(models.Model):
+    title = models.CharField(max_length=100)
+    task = models.ForeignKey('Task', on_delete=models.CASCADE)

@@ -37,13 +37,13 @@ class TasksEditorView(APIView):
             chosen_task = response.json()
             response = requests.get('http://{}/api/tasks/?user_id={}'.format(HOST_ADDRESS, str(request.user.id)))
             all_tasks = response.json()
-            template = "main.html"
+            template = "groups.html"
             context = {"tasks": all_tasks, "chosen_task": chosen_task}
         else:
             private_groups = Group.objects.filter(users__id=request.user.id, type="pri")
             public_groups = Group.objects.filter(users__id=request.user.id, type="pub")
             tasks = Task.objects.filter(user_id=request.user.id)
-            template = "main.html"
+            template = "groups.html"
             context = {"tasks": tasks, "private_groups": private_groups, "public_groups": public_groups}
         if group_id:
             response = requests.get('http://{}/api/tasks/?user_id={}'.format(HOST_ADDRESS, str(request.user.id)))
@@ -52,7 +52,7 @@ class TasksEditorView(APIView):
             context = {"tasks": tasks, "form": TaskForm()}
         print(template)
         print(context)
-        return render(request, "main.html", context=context)
+        return render(request, "groups.html", context=context)
 
     def put(self, request, task_id):
         response = requests.put('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)), request)
@@ -183,7 +183,7 @@ class DeleteGroup(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class GroupView(ListView):
     model = Group
-    template_name = "main.html"
+    template_name = "groups.html"
     context_object_name = "groups"
 
     def get_context_data(self, *, object_list=None, **kwargs):
