@@ -27,6 +27,7 @@ class Membership(models.Model):
 
 class TaskList(models.Model):
     title = models.CharField(max_length=100)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)       # todo: null=false
 
 
 class Task(models.Model):

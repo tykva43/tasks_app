@@ -9,8 +9,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from rest_framework.views import APIView
 
-from task.models import Task, Group
-from .forms import TaskForm, RegistrationForm, GroupForm
+from task.models import Task, Group, TaskList
+from .forms import TaskForm, RegistrationForm, GroupForm, TaskListForm
 
 HOST_ADDRESS = "192.168.0.102:8080"
 
@@ -113,7 +113,7 @@ class TasksEditorView(APIView):
 
 def registration(request):
     if request.user.is_authenticated and request.user.is_active:
-        return HttpResponseRedirect('/tasks/')
+        return HttpResponseRedirect(reverse_lazy('list_group'))
     else:
         context = {}
         if request.method == 'POST':
@@ -149,7 +149,7 @@ class AddGroup(CreateView):
 
     def get_success_url(self, **kwargs):
         if kwargs is not None:
-            return reverse_lazy('detail_group', kwargs={'pk': self.object.id})
+            return reverse_lazy('detail_group', kwargs={'group_pk': self.object.id})
     # success_url = reverse_lazy('detail_group', kwargs={'pk': self.appointment_id})
 
     # def get_context_data(self, *, object_list=None, **kwargs):
@@ -166,7 +166,7 @@ class DetailGroup(DetailView):
     extra_context = {'title': 'Group'}
 
     def get_object(self):
-        return get_object_or_404(self.model, pk=self.kwargs['pk'], users=self.request.user.id)
+        return get_object_or_404(self.model, pk=self.kwargs['group_pk'], users=self.request.user.id)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -218,3 +218,39 @@ def password_reset_complete(request):
     return render(request, "registration/password_reset_complete.html")
 
 
+# ********* TaskList *********
+@method_decorator(login_required, name='dispatch')
+class AddTaskList(CreateView):
+    form_class = TaskListForm
+    template_name = 'tasklist/add_tasklist.html'
+    context_object_name = "tasklist"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Tasklist Creation'
+        context['request'] = self.request.get_full_path()
+        return context
+
+    def get_success_url(self, **kwargs):
+        if kwargs is not None:
+            return reverse_lazy('detail_tasklist',
+                                kwargs={'group_pk': self.request.POST.get('group_pk'), 'tasklist_pk': self.object.id})
+    # success_url = reverse_lazy('detail_group', kwargs={'pk': self.appointment_id})
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = 'Group Creation'
+    #     return context
+
+
+@method_decorator(login_required, name='dispatch')
+class DetailTaskList(DetailView):
+    model = TaskList
+    template_name = 'tasklist/detail_tasklist.html'
+    context_object_name = "tasklist"
+    extra_context = {'title': 'TaskList'}
+    #group_id = ... # todo: get group id from request
+#    print(TaskList.objects.select_related())
+
+    def get_object(self):
+        return get_object_or_404(self.model, pk=self.kwargs['tasklist_pk'], users=self.request.user.id)

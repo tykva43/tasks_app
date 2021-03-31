@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetConfirmView
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 
 from tasks_editor import views
@@ -35,23 +35,26 @@ urlpatterns = [
     # path('tasks/add/', views.add, name='add'),
     # path('tasks/{{task.id}}/edit/', views.edit, name='edit'),
     # path('', RedirectView.as_view(url='tasks/')),
-    path('tasks/<int:task_id>/', TasksEditorView.as_view(), name='chosen_task'),
-    path('groups/<int:group_id>/tasks/add/', TasksEditorView.as_view(), name='add_task'),
+    path('tasks/<int:task_pk>/', TasksEditorView.as_view(), name='chosen_task'),
+    path('groups/<int:group_pk>/tasks/add/', TasksEditorView.as_view(), name='add_task'),
     # path('tasks/add/<int:group_id>/', TasksEditorView.as_view(), name='add_task'),
-    path('tasks/<int:task_id>/edit/', TasksEditorView.as_view(), name='edit_task'),
+    path('tasks/<int:task_pk>/edit/', TasksEditorView.as_view(), name='edit_task'),
 
     # path('groups/add/', views.add_group, name='add_group'),
     path('groups/', views.GroupView.as_view(), name='list_group'),
     path('group/add/', views.AddGroup.as_view(), name='add_group'),
-    path('group/<int:pk>/', views.DetailGroup.as_view(), name='detail_group'),
+    path('group/<int:group_pk>/', views.DetailGroup.as_view(), name='detail_group'),
     path('group/update', views.UpdateGroup.as_view(), name='update_group'),
-    path('group/<int:pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
+    path('group/<int:group_pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
     # path('groups/updating/', views, name='update_group'),
+
+    path('group/<int:group_pk>/tasklist/add/', views.AddTaskList.as_view(), name='add_tasklist'),
+    path('group/<int:group_pk>/tasklist/<int:tasklist_pk>/', views.DetailTaskList.as_view(), name='detail_tasklist'),
 
     path('admin/', admin.site.urls),
     path('profile/', views.user_profile, name='user_profile'),
     path('registration/', views.registration, name='registration'),
-    path('login/', LoginView.as_view(redirect_authenticated_user=True), name='login'),
+    path('login/', LoginView.as_view(redirect_authenticated_user=True, success_url=reverse_lazy('list_group')), name='login'),
     path('logout/', LogoutView.as_view(template_name="registration/logout.html"), name='logout'),
 
     path('password_reset/', MyPasswordResetView.as_view(template_name="registration/password_reset.html"),

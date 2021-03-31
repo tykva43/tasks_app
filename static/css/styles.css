@@ -370,11 +370,16 @@ a.link img {
 .slider_control_next::before {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
 }
+.add_button {
+    width: 100px;
+    height: 50px;
+}
 /* </Slider> */
 /* </Content> */
 
 
 /* <Add Button> */
+/*
 .add_button {
     background-color: rgb(102, 161, 161);
     border-radius: 25px;
@@ -385,7 +390,7 @@ a.link img {
     height: 50px;
     cursor: pointer;
     transition: 0.7s linear;
-}
+}*/
 .add_group {
     margin: auto;
     text-align: center;
