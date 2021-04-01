@@ -169,7 +169,7 @@ class DetailGroup(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Your Groups'
     # !!! Обращение к модели
-        context['tasklists'] = TaskList.objects.filter(id=self.kwargs['group_pk'], user_id=self.request.user.id)
+        context['tasklists'] = TaskList.objects.filter(id=self.kwargs['group_pk'], users__id=self.request.user.id)
         return context
 
     def get_object(self):

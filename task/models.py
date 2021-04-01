@@ -10,7 +10,7 @@ class Group(models.Model):
     )
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=3, choices=GROUP_TYPES)
-    users = models.ManyToManyField(User, through='Membership')
+    users = models.ManyToManyField(User)
     icon_color = models.CharField(max_length=7, default='#9E579D')
 
     def __str__(self):
@@ -27,7 +27,7 @@ class Membership(models.Model):
 
 class TaskList(models.Model):
     title = models.CharField(max_length=100)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)       # todo: null=false
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)  # todo: null=false
 
 
 class Task(models.Model):
