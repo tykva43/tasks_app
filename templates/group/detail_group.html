@@ -13,8 +13,8 @@
     <br>
     <h1 class="title">{{group.name}}</h1>
     <div class="tasklist_block">
-        {% for tasklist in group.tasklists %}
-            <li>{{tasklist.title}}</li>
+        {% for tasklist in tasklists %}
+        <li><a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">{{tasklist.title}}</a></li>
         {% endfor %}
     </div>
 

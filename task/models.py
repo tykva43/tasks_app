@@ -10,7 +10,7 @@ class Group(models.Model):
     )
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=3, choices=GROUP_TYPES)
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(User, through='Membership')
     icon_color = models.CharField(max_length=7, default='#9E579D')
 
     def __str__(self):

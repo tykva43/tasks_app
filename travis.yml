@@ -1,0 +1,21 @@
+language: python
+python: 
+  - "3.7"
+env:
+  - DJANGO_VERSION=3.1.6
+install:
+  - pip install -r requirements.txt
+script: python3 manage.py runserver
+virtualenv:
+  system_site_packages: true
+
+deploy:
+  provider: heroku
+  api_key: 
+    secure: "476b214f-4c22-411b-bf90-0692a3c222c9"
+  app: tasks_editor
+  strategy: git
+  run: 
+    - "rake db:migrate"
+    - restart
+    - "rake cleanup"
