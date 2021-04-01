@@ -4,11 +4,11 @@
 
 {% block content %}
     <div class="control_panel">
-
         <a class="link" href="{% url 'list_group' %}"><img src="{% static "imgs/back.png" %}">&nbsp&nbspBack to Group list</a>
+        ** panel **
         <div class="memberships">
         </div>
-        <a href="{% url 'add_tasklist' group.id %}"><div class="add_button"></div></a>
+        <a href="{% url 'add_tasklist' group.id %}"><div class="add_button">Add</div></a>
     </div>
     <br>
     <h1 class="title">{{group.name}}</h1>

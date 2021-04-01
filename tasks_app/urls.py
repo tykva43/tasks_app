@@ -48,7 +48,7 @@ urlpatterns = [
     path('group/<int:group_pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
     # path('groups/updating/', views, name='update_group'),
 
-    path('group/<int:group_pk>/tasklist/add/', views.AddTaskList.as_view(), name='add_tasklist'),
+    path('group/<int:group_pk>/tasklist/add/', views.CreateTaskList.as_view(), name='add_tasklist'),
     path('group/<int:group_pk>/tasklist/<int:tasklist_pk>/', views.DetailTaskList.as_view(), name='detail_tasklist'),
 
     path('admin/', admin.site.urls),

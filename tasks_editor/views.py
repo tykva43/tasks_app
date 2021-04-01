@@ -192,7 +192,7 @@ class GroupView(ListView):
         return context
 
     def get_queryset(self):
-        return Group.objects.filter(users=self.request.user.id)#(users__id=self.object.users__id)#self.user.id)#
+        return Group.objects.filter(users=self.request.user.id)  # (users__id=self.object.users__id)#self.user.id)#
 
 
 # ********* Password Reset *********
@@ -220,27 +220,29 @@ def password_reset_complete(request):
 
 # ********* TaskList *********
 @method_decorator(login_required, name='dispatch')
-class AddTaskList(CreateView):
+class CreateTaskList(CreateView):
     form_class = TaskListForm
     template_name = 'tasklist/add_tasklist.html'
     context_object_name = "tasklist"
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         context['title'] = 'Tasklist Creation'
-        context['request'] = self.request.get_full_path()
+        context['group_pk'] = self.kwargs['group_pk']
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        group = Group.objects.get(id=self.kwargs['group_pk'])
+        form.instance.group = group
+        self.object.save()
+        return super(CreateTaskList, self).form_valid(form)
 
     def get_success_url(self, **kwargs):
         if kwargs is not None:
             return reverse_lazy('detail_tasklist',
-                                kwargs={'group_pk': self.request.POST.get('group_pk'), 'tasklist_pk': self.object.id})
-    # success_url = reverse_lazy('detail_group', kwargs={'pk': self.appointment_id})
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = 'Group Creation'
-    #     return context
+                                kwargs={'group_pk': self.kwargs['group_pk'], 'tasklist_pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -249,8 +251,7 @@ class DetailTaskList(DetailView):
     template_name = 'tasklist/detail_tasklist.html'
     context_object_name = "tasklist"
     extra_context = {'title': 'TaskList'}
-    #group_id = ... # todo: get group id from request
-#    print(TaskList.objects.select_related())
 
     def get_object(self):
-        return get_object_or_404(self.model, pk=self.kwargs['tasklist_pk'], users=self.request.user.id)
+        return get_object_or_404(self.model, pk=self.kwargs['tasklist_pk'], group=self.kwargs['group_pk'],
+                                 group__users__id=self.request.user.id)
