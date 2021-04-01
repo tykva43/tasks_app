@@ -13,7 +13,9 @@
     <br>
     <h1 class="title">{{group.name}}</h1>
     <div class="tasklist_block">
-
+        {% for tasklist in group.tasklists %}
+            <li>{{tasklist.title}}</li>
+        {% endfor %}
     </div>
 
 {% endblock content %}

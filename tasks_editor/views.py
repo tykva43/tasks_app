@@ -25,7 +25,7 @@ class TasksEditorView(APIView):
             task.user_id = request.user.id
             task.group_id = group_id
             task.save()
-        tasks = Task.objects.filter(user_id=request.user.id)
+        tasks = Task.objects.filter(user_id=request.user.id)            #!!! Обращение к модели
         return render(request, "add.html", context={"tasks": tasks, "form": TaskForm()})
 
     def get(self, request, task_id=None, group_id=None):
@@ -40,7 +40,7 @@ class TasksEditorView(APIView):
             template = "groups.html"
             context = {"tasks": all_tasks, "chosen_task": chosen_task}
         else:
-            private_groups = Group.objects.filter(users__id=request.user.id, type="pri")
+            private_groups = Group.objects.filter(users__id=request.user.id, type="pri")        #!!! Обращение к модели
             public_groups = Group.objects.filter(users__id=request.user.id, type="pub")
             tasks = Task.objects.filter(user_id=request.user.id)
             template = "groups.html"
@@ -158,12 +158,19 @@ class AddGroup(CreateView):
     #     return context
 
 
+# Страница с подробностями конкретной группы
 @method_decorator(login_required, name='dispatch')
 class DetailGroup(DetailView):
     model = Group
     template_name = 'group/detail_group.html'
     context_object_name = "group"
-    extra_context = {'title': 'Group'}
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Your Groups'
+    # !!! Обращение к модели
+        context['tasklists'] = TaskList.objects.filter(id=self.kwargs['group_pk'], user_id=self.request.user.id)
+        return context
 
     def get_object(self):
         return get_object_or_404(self.model, pk=self.kwargs['group_pk'], users=self.request.user.id)
@@ -192,7 +199,7 @@ class GroupView(ListView):
         return context
 
     def get_queryset(self):
-        return Group.objects.filter(users=self.request.user.id)  # (users__id=self.object.users__id)#self.user.id)#
+        return Group.objects.filter(users=self.request.user.id)  #!!! Обращение к модели
 
 
 # ********* Password Reset *********
@@ -234,7 +241,7 @@ class CreateTaskList(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        group = Group.objects.get(id=self.kwargs['group_pk'])
+        group = Group.objects.get(id=self.kwargs['group_pk'])           #!!! Обращение к модели
         form.instance.group = group
         self.object.save()
         return super(CreateTaskList, self).form_valid(form)
