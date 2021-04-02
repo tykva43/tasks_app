@@ -124,7 +124,7 @@
     transition: transform 0.6s ease;
     transform: rotate(90deg);
 }
-.groups_list {
+.group_list, .drop_down_list {
     /*display: block;*/
     display: table;
     transition: all 0.6s ease;
@@ -208,7 +208,7 @@ a {
 .group_menu img:hover {
     background-color: rgb(190, 190, 190);
 }
-.invisible.groups_list {
+.invisible.group_list {
     transform: translateY(0px, -40px);
     opacity: 0;
 }

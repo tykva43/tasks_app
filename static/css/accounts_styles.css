@@ -87,7 +87,7 @@
     border: none;
 }
 .helptext {
-    display: none;
+
 }
 .info {
     color: rgb(0, 64, 0);
@@ -97,4 +97,10 @@
 .errorlist {
     padding-left: 0px;
 
+}
+.is_invalid {
+    background-color: #ffa8af;
+}
+.is_valid {
+    background-color: #0fff83;
 }

@@ -1,6 +1,6 @@
 import requests
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import PasswordResetView, LoginView
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from rest_framework.views import APIView
 
-from task.models import Task, Group, TaskList
+from task.models import Task, Group, TaskList, User
 from .forms import TaskForm, RegistrationForm, GroupForm, TaskListForm
 
 HOST_ADDRESS = "192.168.0.102:8080"
@@ -64,51 +64,15 @@ class TasksEditorView(APIView):
         return JsonResponse(data=response.GET.get('message'), status=response.status_code)
 
 
-# @login_required
-# def view_all_tasks(request):
-#     private_groups = Group.objects.filter(users__id=request.user.id, type="pri")
-#     public_groups = Group.objects.filter(users__id=request.user.id, type="pub")
-#     tasks = Task.objects.filter(user_id=request.user.id)
-#     return render(request, "main.html", context={"tasks": tasks, "tasks_count": len(tasks),
-#                   "private_groups": private_groups, "public_groups": public_groups})
+class RegistrationView(CreateView):
+    template_name = 'registration/registration.html'
+    form_class = RegistrationForm
+    success_url = reverse_lazy('login')
+    redirect_authenticated_user = True
 
-
-# @login_required     # DELETE, PUT, GET
-# def view_chosen_task(request, task_id):
-#     if 'DELETE' in request.method:
-#         response = requests.delete('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)))
-#         return JsonResponse(data=response.GET.get('message'), status=response.status_code)
-# elif 'PUT' in request.method:
-#     response = requests.put('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)), request)
-#     ...
-
-# elif 'GET' in request.method:
-#     response = requests.get('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)))
-#     chosen_task = response.json()
-#     response = requests.get('http://{}/api/tasks/?user_id={}'.format(HOST_ADDRESS, str(request.user.id)))
-#     all_tasks = response.json()
-#     # return JsonResponse(data={"chosen_task": chosen_task})
-#     return render(request, "main.html", context={"tasks": all_tasks, "tasks_count": len(all_tasks),
-#                                                  "chosen_task": chosen_task})
-
-
-# @login_required
-# def add(request, group_id=None):
-#     task_form = TaskForm(request.POST)
-#     if 'POST' in request.method:
-#         if task_form.is_valid():
-#             task = task_form.save(commit=False)
-#             task.user_id = request.user.id
-#             if group_id:
-#                 task.group_id = group_id
-#             task.save()
-#     tasks = Task.objects.filter(user_id=request.user.id)
-#     return render(request, "add.html", context={"tasks": tasks, "tasks_count": len(tasks), "form": TaskForm()})
-
-#
-# @login_required
-# def edit(request):
-#     ...
+    def form_valid(self, form):
+        valid = super().form_valid(form)
+        return valid
 
 
 def registration(request):
@@ -132,9 +96,15 @@ def registration(request):
             return render(request, 'registration/registration.html', context=context)
 
 
-def login(request):
-    ...
+def validate_username(request):
+    """Check username availability"""
+    username = request.GET.get('username', None)
+    response = {
+        'is_taken': User.objects.filter(username=username).exists()
+    }
+    return JsonResponse(response)
 
+# todo: email validation
 
 @login_required
 def user_profile(request):

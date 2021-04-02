@@ -13,7 +13,7 @@
         <form method="post">
             {% csrf_token %}
             <table>
-                {{ form.as_table }}
+                {{ form.as_p }}
             </table>
             <button class="button" type="submit">Send</button>
         </form>
@@ -21,3 +21,40 @@
         <p>Already have account? Then <a href="{% url 'login' %}">login</a></p>
     </div>
 {% endblock %}
+
+{% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // catch the form's submit event
+            $('#id_username').keyup(function () {
+                // create an AJAX call
+                $.ajax({
+                    data: $(this).serialize(), // get the username value
+                    url: "{% url 'validate_username' %}",
+                    // on success
+                    success: function (response) {
+                        if (response.is_taken == true) {
+                            $('#id_username').removeClass('is_valid').addClass('is_invalid');
+                            $('#id_username').after('<div class="invalid-feedback d-block" id="usernameError">This username is not available!</div>')
+                        }
+                        else {
+                            $('#id_username').removeClass('is_invalid').addClass('is_valid');
+                            $('#usernameError').remove();
+
+                        }
+
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+
+                return false;
+            });
+        })
+    </script>
+    {% endblock javascript %}

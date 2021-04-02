@@ -54,7 +54,7 @@
         <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
     </div><h2 class="title">Your Groups</h2>
     </div>
-    <div class="groups_list">
+    <div class="group_list drop_down_list">
         {% if groups %}
             {% for group in groups %}
                 <a href="{% url 'detail_group' group.id %}">

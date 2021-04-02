@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{group.name}}{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block content %}
     <div class="control_panel">
         <a class="link" href="{% url 'list_group' %}"><img src="{% static "imgs/back.png" %}">&nbsp&nbspBack to Group list</a>
-        ** panel **
         <div class="memberships">
         </div>
         <a href="{% url 'add_tasklist' group.id %}"><div class="add_button">Add</div></a>
     </div>
     <br>
-    <h1 class="title">{{group.name}}</h1>
-    <div class="tasklist_block">
+    <h1 class="title">{{ group.name }}</h1>
+
+    <div class="tasklist_block drop_down_list">
         {% for tasklist in tasklists %}
-        <li><a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">{{tasklist.title}}</a></li>
+        <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
+            <div class="tasklist_title">{{ tasklist.title }}</div>
+        </a>
         {% endfor %}
     </div>
 

@@ -53,10 +53,14 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('profile/', views.user_profile, name='user_profile'),
-    path('registration/', views.registration, name='registration'),
     path('login/', LoginView.as_view(redirect_authenticated_user=True, success_url=reverse_lazy('list_group')), name='login'),
     path('logout/', LogoutView.as_view(template_name="registration/logout.html"), name='logout'),
 
+    # Registration
+    path('registration/', views.RegistrationView.as_view(), name='registration'),
+    # path('registration/', views.registration, name='registration'),
+    path('validate_username', views.validate_username, name='validate_username'),
+    # todo: email validation
     path('password_reset/', MyPasswordResetView.as_view(template_name="registration/password_reset.html"),
          name='password_reset'),
     path('password_reset/done/', views.password_reset_done, name='password_reset_done'),
