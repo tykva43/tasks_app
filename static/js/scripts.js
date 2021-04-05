@@ -13,6 +13,8 @@ $(document).ready(function() {
         $(this).parent('.expander_wrapper').children('.drop_down_list').toggleClass('invisible');
     });
 
+    $('.drop_down_menu').on('click', function() { $(this).children('.drop_down_menu_content').toggleClass('invisible') })
+
     $('.menu_item').on('click', menuItemClicked);
 
     $(window).on( "resize", changeContentWidth);

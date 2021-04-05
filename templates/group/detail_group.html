@@ -5,14 +5,29 @@
 {% block content %}
     <div class="control_panel">
         <a class="link" href="{% url 'list_group' %}"><img src="{% static "imgs/back.png" %}">&nbsp&nbspBack to Group list</a>
-        <br><div class="flex_div border_div">
+        <br>
+        <div class="flex_div border_div">
             <h1 class="title">{{ group.name }}</h1>
-            <a href="{% url 'add_tasklist' group.id %}"><div class="add_button">Add</div></a>
+
+            <div class="drop_down_menu">
+                <button class="drop_down_btn">Add</button>
+                <div class="drop_down_menu_content invisible">
+
+                    <a href="{% url 'add_tasklist' group.id %}">Tasklist</a>
+                    <a href="#">Task</a>
+
+                </div>
+            </div>
+
+<!--            <a href="{% url 'add_tasklist' group.id %}">-->
+<!--                <div class="add_button drop_down_btn">Add</div>-->
+<!--            </a>-->
         </div>
         <div class="memberships"></div>
-
     </div>
+
     <br>
+
     <div id="tasklists">
         {% for tasklist in tasklists %}
             <div class="expander_wrapper">

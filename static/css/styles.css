@@ -1,4 +1,7 @@
 /* <Left Menu> */
+html {
+    font-family: YanoneKaffeesatz;
+}
 .left_menu {
     /*display: none;*/
     width: 300px;
@@ -23,7 +26,6 @@
     padding-top: 20px;
     text-align: center;
     color: rgb(255, 255, 255);
-    font-family: YanoneKaffeesatz;
     transition: 0.7s linear;
     font-size: 20px;
 }
@@ -143,11 +145,10 @@ a {
     border-bottom-style: solid;
     height: 70px;
     /*display: inline-flex;*/
-    display: flex;
+    /*display: flex;*/
 }
 .literal {
     color: rgb(255, 255, 255);
-    font-family: YanoneKaffeesatz;
     font-size: 40px;
     width: 44px;
     height: 40px;
@@ -190,7 +191,6 @@ a {
     position: relative;
 }
 .elem_title {
-    font-family: YanoneKaffeesatz;
     font-size: 22px;
     margin-top: auto;
     margin-bottom: auto;
@@ -225,7 +225,6 @@ body {
 }
 .note {
     color: rgb(210, 210, 210);
-    font-family: YanoneKaffeesatz;
     font-size: 22px;
     display: block;
     margin-left: 35px;
@@ -239,7 +238,6 @@ body {
 .title {
     color: #bf344e;
     font-size: 30px;
-    font-family: YanoneKaffeesatz;
     text-align: left;
     padding-left: 10px;
     /* display: inline-block; */
@@ -257,7 +255,6 @@ body {
 a.link {
     text-decoration: underline;
     font-size: 20px;
-    font-family: YanoneKaffeesatz;
 }
 a.link img {
     height: 20px;
@@ -396,6 +393,8 @@ a.link img {
 
 .flex_div {
     display: flex;
+    flex-direction:row;
+    justify-content: space-between;
     margin-top: 20px;
 }
 .add_button {
@@ -420,3 +419,31 @@ a.link img {
 #tasklists {
     margin-left: 20px;
 }
+.drop_down_btn {
+    background-color: black;
+    color: white;
+    padding: 5px;
+    font-family: YanoneKaffeesatz;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+}
+.drop_down_menu {
+    position: relative;
+    display: inline-block;
+}
+.drop_down_menu_content {
+    position: absolute;
+    background-color: lightgrey;
+    min-width: 20px;
+    font-size: 20px;
+    z-index: 1;
+}
+.drop_down_menu_content a {
+    color: black;
+    padding: 7px;
+    text-decoration: none;
+    display: block;
+}
+.drop_down_menu_content a:hover {background-color: white;}
+.drop_down_menu:hover .drop_down_btn {background-color: grey;}

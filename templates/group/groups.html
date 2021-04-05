@@ -59,7 +59,7 @@
             {% if groups %}
                 {% for group in groups %}
                     <a href="{% url 'detail_group' group.id %}">
-                        <div class="group_elem list_elem">
+                        <div class="group_elem list_elem flex_div">
                             <div class="group_icon" style="background-color: {{group.icon_color}}">
                                 <div class="literal">{{group.name|slicestring:"0:1"}}</div>
                             </div>
@@ -72,7 +72,7 @@
                 {% endfor %}
             {% endif %}
             <a href="{% url 'add_group' %}">
-                <div class="group_elem plus_group list_elem">
+                <div class="group_elem plus_group list_elem flex_div">
                     <div class="group_icon">
                         <div class="horiz_div"></div>
                         <div class="vert_div"></div>

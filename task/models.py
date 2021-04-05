@@ -42,6 +42,11 @@ class Task(models.Model):
         ('medium', 'Medium priority'),
         ('low', 'Low priority')
     )
+    STATUSES = (
+        ('on', 'On progress'),
+        ('new', 'Created'),
+        ('ready', 'Completed')
+    )
 
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300, null=True)
@@ -52,6 +57,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True)
+    status = models.CharField(max_length=7, choices=STATUSES, default='new')
 
     tasklist = models.ForeignKey('TaskList', on_delete=models.CASCADE, null=True)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
@@ -61,8 +67,12 @@ class Task(models.Model):
 
 
 class Subtask(models.Model):
+
     title = models.CharField(max_length=100)
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True)
+    # status = models.CharField(max_length=7, choices=Task.STATUSES, default='new')
 
 
 class Commentaire(models.Model):
