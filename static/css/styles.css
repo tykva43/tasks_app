@@ -447,3 +447,8 @@ a.link img {
 }
 .drop_down_menu_content a:hover {background-color: white;}
 .drop_down_menu:hover .drop_down_btn {background-color: grey;}
+.task_block {
+    height: 25px;
+    font-size: 25px;
+    margin-left: 35px;
+}

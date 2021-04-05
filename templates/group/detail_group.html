@@ -38,9 +38,22 @@
                     <div class="tasklist_title">{{ tasklist.title }}</div>
                 </a>
                 <div class="tasklist_block drop_down_list">
-    <!--                list_elem classes   -->
+
+                    <div class="expander_wrapper">
+                        <div class="expander">
+                            <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+                        </div>
+                        <div class="tasklist_block drop_down_list">
+                            {% for task in tasklist.tasks.all %}
+                            <div class="list_elem task_block">
+                                {{ task.title }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            </div> <br>
 
         {% endfor %}
     </div>
