@@ -5,18 +5,28 @@
 {% block content %}
     <div class="control_panel">
         <a class="link" href="{% url 'list_group' %}"><img src="{% static "imgs/back.png" %}">&nbsp&nbspBack to Group list</a>
-        <div class="memberships">
+        <br><div class="flex_div border_div">
+            <h1 class="title">{{ group.name }}</h1>
+            <a href="{% url 'add_tasklist' group.id %}"><div class="add_button">Add</div></a>
         </div>
-        <a href="{% url 'add_tasklist' group.id %}"><div class="add_button">Add</div></a>
+        <div class="memberships"></div>
+
     </div>
     <br>
-    <h1 class="title">{{ group.name }}</h1>
-
-    <div class="tasklist_block drop_down_list">
+    <div id="tasklists">
         {% for tasklist in tasklists %}
-        <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
-            <div class="tasklist_title">{{ tasklist.title }}</div>
-        </a>
+            <div class="expander_wrapper">
+                <div class="expander">
+                    <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+                </div>
+                <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
+                    <div class="tasklist_title">{{ tasklist.title }}</div>
+                </a>
+                <div class="tasklist_block drop_down_list">
+    <!--                list_elem classes   -->
+                </div>
+            </div>
+
         {% endfor %}
     </div>
 

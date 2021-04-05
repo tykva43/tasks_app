@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     $('.expander').on('click', function() {
         $(this).toggleClass('rotated');
-        $('.groups_list').toggleClass('invisible');
+        $(this).parent('.expander_wrapper').children('.drop_down_list').toggleClass('invisible');
     });
 
     $('.menu_item').on('click', menuItemClicked);

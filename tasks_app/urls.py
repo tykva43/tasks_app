@@ -19,7 +19,8 @@ from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 
 from tasks_editor import views
-from tasks_editor.views import TasksEditorView, MyPasswordResetView
+# from tasks_editor.views import TasksEditorView, MyPasswordResetView
+from tasks_editor.views import MyPasswordResetView
 
 urlpatterns = [
     # path('tasks/', views.main, name='main'),
@@ -35,10 +36,10 @@ urlpatterns = [
     # path('tasks/add/', views.add, name='add'),
     # path('tasks/{{task.id}}/edit/', views.edit, name='edit'),
     # path('', RedirectView.as_view(url='tasks/')),
-    path('tasks/<int:task_pk>/', TasksEditorView.as_view(), name='chosen_task'),
-    path('groups/<int:group_pk>/tasks/add/', TasksEditorView.as_view(), name='add_task'),
+    # path('tasks/<int:task_pk>/', TasksEditorView.as_view(), name='chosen_task'),
+    # path('groups/<int:group_pk>/tasks/add/', TasksEditorView.as_view(), name='add_task'),
     # path('tasks/add/<int:group_id>/', TasksEditorView.as_view(), name='add_task'),
-    path('tasks/<int:task_pk>/edit/', TasksEditorView.as_view(), name='edit_task'),
+    # path('tasks/<int:task_pk>/edit/', TasksEditorView.as_view(), name='edit_task'),
 
     # path('groups/add/', views.add_group, name='add_group'),
     path('groups/', views.GroupView.as_view(), name='list_group'),
@@ -53,7 +54,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('profile/', views.user_profile, name='user_profile'),
-    path('login/', LoginView.as_view(redirect_authenticated_user=True, success_url=reverse_lazy('list_group')), name='login'),
+    path('login/', LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('logout/', LogoutView.as_view(template_name="registration/logout.html"), name='logout'),
 
     # Registration

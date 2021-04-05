@@ -50,40 +50,40 @@
 {% endblock groups %}
 
 {% block content %}
-    <div class="wrapper"><div class="expander">
-        <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
-    </div><h2 class="title">Your Groups</h2>
-    </div>
-    <div class="group_list drop_down_list">
-        {% if groups %}
-            {% for group in groups %}
-                <a href="{% url 'detail_group' group.id %}">
-                    <div class="group_elem">
-                        <div class="group_icon" style="background-color: {{group.icon_color}}">
-                            <div class="literal">{{group.name|slicestring:"0:1"}}</div>
+    <div class="expander_wrapper">
+        <div class="expander">
+            <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+        </div>
+        <h2 class="title">Your Groups</h2>
+        <div class="group_list drop_down_list">
+            {% if groups %}
+                {% for group in groups %}
+                    <a href="{% url 'detail_group' group.id %}">
+                        <div class="group_elem list_elem">
+                            <div class="group_icon" style="background-color: {{group.icon_color}}">
+                                <div class="literal">{{group.name|slicestring:"0:1"}}</div>
+                            </div>
+                            <span class="elem_title">{{group.name}}</span>
+                            <div class="elem_menu">
+                                <img src="{% static "imgs/menu.png" %}">
+                            </div>
                         </div>
-                        <span class="group_title">{{group.name}}</span>
-                        <div class="group_menu">
-                            <img src="{% static "imgs/menu.png" %}">
-                        </div>
-                    </div>
-                </a>
-            {% endfor %}
-        {% else %}
-<!--            <div class="note">There is no any group</div>-->
-        {% endif %}
+                    </a>
+                {% endfor %}
+            {% endif %}
             <a href="{% url 'add_group' %}">
-                <div class="group_elem plus_group">
+                <div class="group_elem plus_group list_elem">
                     <div class="group_icon">
                         <div class="horiz_div"></div>
                         <div class="vert_div"></div>
                     </div>
-                    <div class="group_title">New Group</div>
-                    <div class="group_menu">
+                    <div class="elem_title">New Group</div>
+                    <div class="elem_menu">
                         <img src="{% static "imgs/menu.png" %}">
                     </div>
                 </div>
             </a>
+        </div>
     </div>
 {% endblock content %}
 

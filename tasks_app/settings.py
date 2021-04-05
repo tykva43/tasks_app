@@ -95,7 +95,7 @@ DATABASES = {
 
 LOGIN_URL = '/login/'
 
-LOGIN_REDIRECT_URL = '/tasks/'
+LOGIN_REDIRECT_URL = '/groups/'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
