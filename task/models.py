@@ -63,3 +63,10 @@ class Task(models.Model):
 class Subtask(models.Model):
     title = models.CharField(max_length=100)
     task = models.ForeignKey('Task', on_delete=models.CASCADE)
+
+
+class Commentaire(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)

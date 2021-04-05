@@ -58,8 +58,8 @@ urlpatterns = [
 
     # Registration
     path('registration/', views.RegistrationView.as_view(), name='registration'),
-    # path('registration/', views.registration, name='registration'),
     path('validate_username', views.validate_username, name='validate_username'),
+    path('validate_email', views.validate_email, name='validate_email'),
     # todo: email validation
     path('password_reset/', MyPasswordResetView.as_view(template_name="registration/password_reset.html"),
          name='password_reset'),

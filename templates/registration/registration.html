@@ -27,7 +27,6 @@
 
     <script>
         $(document).ready(function () {
-            // catch the form's submit event
             $('#id_username').keyup(function () {
                 // create an AJAX call
                 $.ajax({
@@ -35,14 +34,41 @@
                     url: "{% url 'validate_username' %}",
                     // on success
                     success: function (response) {
-                        if (response.is_taken == true) {
-                            $('#id_username').removeClass('is_valid').addClass('is_invalid');
-                            $('#id_username').after('<div class="invalid-feedback d-block" id="usernameError">This username is not available!</div>')
-                        }
-                        else {
+                        if (response.is_valid == true) {
                             $('#id_username').removeClass('is_invalid').addClass('is_valid');
                             $('#usernameError').remove();
+                        }
+                        else {
+                            if ($("#usernameError").length<=0) {
+                                $('#id_username').after('<div class="invalid-feedback d-block" id="usernameError">This username is not available!</div>');
+                            }
+                            $('#id_username').removeClass('is_valid').addClass('is_invalid');
+                        }
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        console.log(response.responseJSON.errors)
+                    }
+                });
 
+                return false;
+            });
+
+            $('#id_email').keyup(function () {
+                // create an AJAX call
+                $.ajax({
+                    data: $(this).serialize(), // get the email value
+                    url: "{% url 'validate_email' %}",
+                    // on success
+                    success: function (response) {
+                        if (response.is_valid == true) {
+                            $('#id_email').removeClass('is_invalid').addClass('is_valid');
+                            $('#emailError').remove();
+                            }
+                        else {
+                            $('#id_email').removeClass('is_valid').addClass('is_invalid');
+                            $('#id_email').after('<div class="invalid-feedback d-block" id="emailError">This email is not available!</div>')
                         }
 
                     },
