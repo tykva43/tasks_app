@@ -418,7 +418,8 @@ a.link img {
 }
 #tasklists {
     margin-left: 20px;
-    min-width: 600px;
+    min-width: max-content;
+    width: 50%;
 }
 .drop_down_btn {
     background-color: black;
@@ -497,3 +498,10 @@ body::-webkit-scrollbar-track {
 .list_elem.task_block, .list_elem.subtask_block {
     border: none;
 }
+
+.task_detail {
+    background-color: #d9bdd2;
+    font-size: 22px;
+    height: max-content;
+    padding: 1%;
+    }

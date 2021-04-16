@@ -27,6 +27,7 @@
     <br>
     <div class="flex_div">
         <div id="tasklists">
+
             {% for tasklist in tasklists %}
                 <div class="expander_wrapper">
                     <div class="tasklist_title_wrapper">
@@ -40,19 +41,27 @@
                     </div>
                     <div class="tasklist_block_wrapper">
                         <div class="tasklist_block drop_down_list">
+
                             {% for task in tasklist.tasks.all %}
                             <div class="expander_wrapper">
                                 <div class="expander task_expander">
                                     <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
                                 </div>
                                 <div class="list_elem task_block flex_div">
-                                {% if task.is_completed %}
-                                    <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                {% else %}
-                                    <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                {% endif %}
-                                        {{ task.title }}
+                                    {% if task.is_completed %}
+                                        <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                    {% else %}
+                                        <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                    {% endif %}
+                                    {{ task.title }}
+
+                                    {% if task.is_favorite %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
                                 </div>
+
                                 <!-- Subtask list -->
                                 <div class="subtask_block drop_down_list">
                                     {% for subtask in task.subtasks.all %}
@@ -71,13 +80,17 @@
                             {% empty %}
                             <div class="description">There are no tasks yet</div>
                             {% endfor %}
+
                         </div>
                     </div>
                 </div> <br>
 
             {% endfor %}
         </div>
-        <div class="task_detail"></div>
+
+        <div class="task_detail">
+            {{task_form.as_p}}
+        </div>
     </div>
 
 {% endblock content %}

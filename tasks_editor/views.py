@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from task.models import Group, TaskList, User
-from .forms import RegistrationForm, GroupForm, TaskListForm
+from .forms import RegistrationForm, GroupForm, TaskListForm, TaskForm
 
 HOST_ADDRESS = "192.168.0.102:8080"
 
@@ -112,7 +112,7 @@ class DetailGroup(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Your Groups'
-
+        context['task_form'] = TaskForm
         # !!! Обращение к модели
         # context['tasks'] = Task.objects.filter(group_id=self.kwargs['group_pk'])
         # tasklists = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('tasks').\
