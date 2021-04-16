@@ -18,7 +18,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordResetConfir
 from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 
-from tasks_editor import views
+from tasks_editor import views, ajax
 # from tasks_editor.views import TasksEditorView, MyPasswordResetView
 from tasks_editor.views import MyPasswordResetView
 
@@ -41,6 +41,7 @@ urlpatterns = [
     # path('tasks/add/<int:group_id>/', TasksEditorView.as_view(), name='add_task'),
     # path('tasks/<int:task_pk>/edit/', TasksEditorView.as_view(), name='edit_task'),
 
+    # Groups
     # path('groups/add/', views.add_group, name='add_group'),
     path('groups/', views.GroupView.as_view(), name='list_group'),
     path('group/add/', views.AddGroup.as_view(), name='add_group'),
@@ -49,9 +50,18 @@ urlpatterns = [
     path('group/<int:group_pk>/delete/', views.DeleteGroup.as_view(), name='delete_group'),
     # path('groups/updating/', views, name='update_group'),
 
+    # Tasklists
     path('group/<int:group_pk>/tasklist/add/', views.CreateTaskList.as_view(), name='add_tasklist'),
     path('group/<int:group_pk>/tasklist/<int:tasklist_pk>/', views.DetailTaskList.as_view(), name='detail_tasklist'),
 
+    # Tasks
+    path('task/<int:pk>/status/update/', ajax.update_task_status, name='update_task_status'),
+
+    # Subtasks
+    path('subtask/<int:pk>/status/update/', ajax.update_subtask_status, name='update_subtask_status'),
+
+
+    # User actions
     path('admin/', admin.site.urls),
     path('profile/', views.user_profile, name='user_profile'),
     path('login/', LoginView.as_view(redirect_authenticated_user=True), name='login'),
@@ -59,9 +69,8 @@ urlpatterns = [
 
     # Registration
     path('registration/', views.RegistrationView.as_view(), name='registration'),
-    path('validate_username', views.validate_username, name='validate_username'),
-    path('validate_email', views.validate_email, name='validate_email'),
-    # todo: email validation
+    path('validate_username/', ajax.validate_username, name='validate_username'),
+    path('validate_email/', ajax.validate_email, name='validate_email'),
     path('password_reset/', MyPasswordResetView.as_view(template_name="registration/password_reset.html"),
          name='password_reset'),
     path('password_reset/done/', views.password_reset_done, name='password_reset_done'),

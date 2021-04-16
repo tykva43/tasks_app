@@ -3,6 +3,40 @@ var is_menu_opened = 0;
 function div(val, by){
     return (val - val % by) / by;
 }
+    // Changes task marker status and statuses of related subtasks
+    function taskMarkerClicked(obj) {
+        obj.toggleClass('fa-square-o fa-check-square-o');
+        var is_task_completed = obj.hasClass('fa-check-square-o');
+        var subtasks = obj.parents('.tasklist_block').find('.subtask_marker');
+        obj.parents('.tasklist_block').find('.subtask_marker').each(function() {
+           var is_subtask_completed = $(this).hasClass('fa-check-square-o');
+           if (is_subtask_completed != is_task_completed)
+               $(this).toggleClass('fa-square-o fa-check-square-o');
+        });
+    };
+
+    // Changes subtask status
+    function subtaskMarkerClicked(obj, is_task_toggled) {
+        if (is_task_toggled)
+            obj.parents('.task_marker').toggleClass('fa-square-o fa-check-square-o');
+        obj.toggleClass('fa-square-o fa-check-square-o');
+    };
+
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    };
 
 $(document).ready(function() {
 
@@ -10,10 +44,16 @@ $(document).ready(function() {
 
     $('.expander').on('click', function() {
         $(this).toggleClass('rotated');
-        $(this).parent('.expander_wrapper').children('.drop_down_list').toggleClass('invisible');
+        $(this).parents('.expander_wrapper').eq(0).find('.drop_down_list').toggleClass('invisible');
     });
 
-    $('.drop_down_menu').on('click', function() { $(this).children('.drop_down_menu_content').toggleClass('invisible') })
+    $('.drop_down_menu').on('click', function() { $(this).children('.drop_down_menu_content').toggleClass('invisible') });
+
+    // Toggle class for tasks and subtasks markers
+    //$('.fa-check-square-o').on('click', function() { $(this).toggleClass('fa-square-o fa-check-square-o') });
+    //$('.fa-square-o').on('click', function() { $(this).toggleClass('fa-square-o fa-check-square-o') });
+
+
 
     $('.menu_item').on('click', menuItemClicked);
 

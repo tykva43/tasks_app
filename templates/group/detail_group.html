@@ -12,10 +12,8 @@
             <div class="drop_down_menu">
                 <button class="drop_down_btn">Add</button>
                 <div class="drop_down_menu_content invisible">
-
                     <a href="{% url 'add_tasklist' group.id %}">Tasklist</a>
                     <a href="#">Task</a>
-
                 </div>
             </div>
 
@@ -27,35 +25,108 @@
     </div>
 
     <br>
-
-    <div id="tasklists">
-        {% for tasklist in tasklists %}
-            <div class="expander_wrapper">
-                <div class="expander">
-                    <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
-                </div>
-                <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
-                    <div class="tasklist_title">{{ tasklist.title }}</div>
-                </a>
-                <div class="tasklist_block drop_down_list">
-
-                    <div class="expander_wrapper">
+    <div class="flex_div">
+        <div id="tasklists">
+            {% for tasklist in tasklists %}
+                <div class="expander_wrapper">
+                    <div class="tasklist_title_wrapper">
                         <div class="expander">
                             <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
                         </div>
+                        <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
+                            <div class="tasklist_title">{{ tasklist.title }}</div>
+                        </a>
+                        <i class="fa fa-ellipsis-h"></i>
+                    </div>
+                    <div class="tasklist_block_wrapper">
                         <div class="tasklist_block drop_down_list">
                             {% for task in tasklist.tasks.all %}
-                            <div class="list_elem task_block">
-                                {{ task.title }}
+                            <div class="expander_wrapper">
+                                <div class="expander task_expander">
+                                    <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+                                </div>
+                                <div class="list_elem task_block flex_div">
+                                {% if task.is_completed %}
+                                    <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                {% endif %}
+                                        {{ task.title }}
+                                </div>
+                                <!-- Subtask list -->
+                                <div class="subtask_block drop_down_list">
+                                    {% for subtask in task.subtasks.all %}
+                                        <div class="list_elem subtask_block flex_div">
+                                            {% if subtask.is_completed %}
+                                                <i class="fa fa-check-square-o subtask_marker" id="s{{subtask.id}}" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i class="fa fa-square-o subtask_marker" id="s{{subtask.id}}" aria-hidden="true"></i>
+                                            {% endif %}
+                                            {{ subtask.title }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
                             </div>
+                            {% empty %}
+                            <div class="description">There are no tasks yet</div>
                             {% endfor %}
                         </div>
                     </div>
+                </div> <br>
 
-                </div>
-            </div> <br>
-
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="task_detail"></div>
     </div>
 
 {% endblock content %}
+{% block javascript %}
+        $(document).ready(function () {
+            // If the user checks or unchecks the task completion marker
+            $('.task_marker').on('click', function () {
+                // create an AJAX call
+                var task_marker = $(this);
+                var id = $(this).attr('id').substr(1); // get the task id value
+                var status = !$(this).hasClass('fa-check-square-o');
+                $.ajax({
+                    data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
+                    url: "/task/" + id + "/status/update/",         // URL
+                    type: "POST",
+                    // on success
+                    success: function (response) {
+                        if (response.is_successful == true) {
+                            taskMarkerClicked(task_marker);
+                        }
+                        else {
+                            // todo: show message about failure
+                        }
+                    }
+                });
+                return false;
+            });
+
+            // If the user checks or unchecks the subtask completion marker
+            $('.subtask_marker').on('click', function () {
+                // create an AJAX call
+                var subtask_marker = $(this);
+                var id = subtask_marker.attr('id').substr(1); // get the task id value
+                var status = !subtask_marker.hasClass('fa-check-square-o');
+                $.ajax({
+                    data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
+                    url: "/subtask/" + id + "/status/update/",         // URL
+                    type: "POST",
+                    // on success
+                    success: function (response) {
+                        if (response.is_successful == true) {
+                            subtaskMarkerClicked(subtask_marker, response.is_task_toggled);
+                        }
+                        else {
+                            // todo: show message about failure
+                        }
+                    }
+                });
+                return false;
+            });
+        })
+    {% endblock javascript %}

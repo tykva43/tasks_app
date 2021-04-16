@@ -230,9 +230,9 @@ body {
     margin-left: 35px;
 }
 .expander_wrapper {
-    border-bottom-color: rgb(180, 180, 180);
+    /*border-bottom-color: rgb(180, 180, 180);
     border-bottom-width: 3px;;
-    border-bottom-style: solid;
+    border-bottom-style: solid;*/
     max-width: 650px;
 }
 .title {
@@ -418,6 +418,7 @@ a.link img {
 }
 #tasklists {
     margin-left: 20px;
+    min-width: 600px;
 }
 .drop_down_btn {
     background-color: black;
@@ -450,5 +451,49 @@ a.link img {
 .task_block {
     height: 25px;
     font-size: 25px;
+    display: inline;
+}
+.fa-square-o, .fa-check-square-o {
+    cursor: pointer;
+}
+.task_expander {
     margin-left: 35px;
+}
+.subtask_block {
+    margin-left: 50px;
+    font-size: 20px;
+    height: max-content;
+}
+.tasklist_title_wrapper {
+    background-color:  #bdbdf2;	/*#E6E6FA;*/
+    position: relative;
+}
+
+.tasklist_block_wrapper {
+    background-color:  #E6E6FA;
+}
+.description {
+    font-size: 20px;
+    color: #8c4566;
+    padding: 5px;
+    font-style: italic;
+}
+body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: #472334;
+    border-radius: 20px;
+}
+body::-webkit-scrollbar-track {
+    background-color: #8c4566;
+}
+.fa-ellipsis-h {
+    right: 10px;
+    position: absolute;
+    cursor: pointer;
+}
+.list_elem.task_block, .list_elem.subtask_block {
+    border: none;
 }

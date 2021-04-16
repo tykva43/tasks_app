@@ -1,19 +1,15 @@
-import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.views import PasswordResetView, LoginView
-from django.http import JsonResponse, HttpResponseRedirect
+from django.contrib.auth.views import PasswordResetView
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from rest_framework.views import APIView
-from django.core.validators import validate_email as django_email_validator
-from django.core.exceptions import ValidationError
 
-from task.models import Task, Group, TaskList, User
-from .forms import TaskForm, RegistrationForm, GroupForm, TaskListForm
+from task.models import Group, TaskList, User
+from .forms import RegistrationForm, GroupForm, TaskListForm
 
 HOST_ADDRESS = "192.168.0.102:8080"
 
@@ -81,32 +77,6 @@ class RegistrationView(UserPassesTestMixin, CreateView):
         return valid
 
 
-def validate_username(request):
-    """Check username availability"""
-    username = request.GET.get('username', None)
-
-    response = {
-        'is_valid': not User.objects.filter(username=username).exists() and len(username) > 0
-    }
-    return JsonResponse(response)
-
-
-def is_email_valid(email):
-    try:
-        django_email_validator(email)
-        return True
-    except ValidationError:
-        return False
-
-
-def validate_email(request):
-    """Check email availability"""
-    email = request.GET.get('email', None)
-    print(email)
-    response = {
-        'is_valid': not User.objects.filter(email=email).exists() and is_email_valid(email)
-    }
-    return JsonResponse(response)
 
 
 
@@ -142,6 +112,7 @@ class DetailGroup(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Your Groups'
+
         # !!! Обращение к модели
         # context['tasks'] = Task.objects.filter(group_id=self.kwargs['group_pk'])
         # tasklists = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('tasks').\

@@ -32,6 +32,7 @@ class TaskList(models.Model):
     class Meta:
         default_related_name = 'tasklists'
 
+
 class Task(models.Model):
     NOTIFICATION_TYPES = (
         ('no', 'Don\'t remind me'),
@@ -59,7 +60,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True)
-    status = models.CharField(max_length=7, choices=STATUSES, default='new')
+    # status = models.CharField(max_length=7, choices=STATUSES, default='new')
 
     tasklist = models.ForeignKey('TaskList', on_delete=models.CASCADE, null=True)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
@@ -81,6 +82,7 @@ class Subtask(models.Model):
 
     class Meta:
         default_related_name = 'subtasks'
+
 
 class Commentaire(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)

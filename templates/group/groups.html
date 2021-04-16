@@ -56,6 +56,18 @@
         </div>
         <h2 class="title">Your Groups</h2>
         <div class="group_list drop_down_list">
+            <a href="{% url 'add_group' %}">
+                <div class="group_elem plus_group list_elem flex_div">
+                    <div class="group_icon">
+                        <div class="horiz_div"></div>
+                        <div class="vert_div"></div>
+                    </div>
+                    <div class="elem_title">New Group</div>
+                    <div class="elem_menu">
+                        <img src="{% static "imgs/menu.png" %}">
+                    </div>
+                </div>
+            </a>
             {% if groups %}
                 {% for group in groups %}
                     <a href="{% url 'detail_group' group.id %}">
@@ -71,18 +83,6 @@
                     </a>
                 {% endfor %}
             {% endif %}
-            <a href="{% url 'add_group' %}">
-                <div class="group_elem plus_group list_elem flex_div">
-                    <div class="group_icon">
-                        <div class="horiz_div"></div>
-                        <div class="vert_div"></div>
-                    </div>
-                    <div class="elem_title">New Group</div>
-                    <div class="elem_menu">
-                        <img src="{% static "imgs/menu.png" %}">
-                    </div>
-                </div>
-            </a>
         </div>
     </div>
 {% endblock content %}
