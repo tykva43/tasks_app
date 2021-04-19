@@ -60,6 +60,8 @@ var is_menu_opened = 0;
 
     };
 
+
+
     function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -76,9 +78,30 @@ var is_menu_opened = 0;
     return cookieValue;
     };
 
+
+
 $(document).ready(function() {
 
     changeContentWidth();
+
+
+
+    $(window).scroll(function(){
+        var scrollTop = $(this).scrollTop();
+        var taskFormHeight = $('.task_form').outerHeight();
+        var windowHeight = $(window).height();
+        var tasklistsTop = $('#tasklists').offset().top;
+        if(windowHeight - tasklistsTop + scrollTop >= taskFormHeight) {
+        var delta;
+            if (scrollTop <= tasklistsTop)
+                delta = (windowHeight - (tasklistsTop- scrollTop) - taskFormHeight)/2 ;
+            else
+                delta = (windowHeight - taskFormHeight)/2 + scrollTop - tasklistsTop ;
+            $('.task_form').css({'margin-top': delta.toString() + "px"});
+        }
+        else
+            $('.task_form').css({'margin-top': "0px"});
+    });
 
     // When you double-click on the task element, display information about the task
     $('.task_block').on('dblclick', function() {

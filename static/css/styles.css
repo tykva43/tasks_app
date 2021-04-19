@@ -502,11 +502,9 @@ body::-webkit-scrollbar-track {
 .task_form {
     background-color: #d9bdd2;
     font-size: 22px;
-    height: max-content;
+    height: min-content;
     padding: 1%;
-    position: fixed;
-    margin-left: 50%;
-    bottom: 20px;
+    transition: 0.2s linear;
 }
 .fa-star {
     cursor: pointer;
