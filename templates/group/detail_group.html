@@ -57,9 +57,9 @@
                                         {{ task.title }}
                                     </div>
                                     {% if task.is_favorite %}
-                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star" id="f{{task.id}}"></i>
                                     {% else %}
-                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star" id="f{{task.id}}"></i>
                                     {% endif %}
                                 </div>
                                 <!-- Subtask list -->
@@ -107,7 +107,9 @@
 
             // Change is_favorite status
             $('.fa-star').on('click', function() {
-                var url = "{% url 'update_favorite_status' %}?task_pk=" + $(this).attr('id').substr(1); // get the task id value
+                var id = $(this).attr('id').substr(1); // get the task id value
+                var url = "{% url 'update_favorite_status' %}?task_pk=" + id;
+                updateFavoriteStatus($(this), url);
             });
 
             // Call AJAX for creating task

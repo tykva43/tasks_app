@@ -41,7 +41,7 @@ var is_menu_opened = 0;
                                     <i class=\"fa fa-square-o task_marker\" id=\"t${new_task.pk}\" aria-hidden=\"true\"></i>
                                     ${new_task.fields.title}
                                 </div>
-                                <i class=\"${is_favorite} fa-star\"></i>
+                                <i class=\"${is_favorite} fa-star\" id=\"f${new_task.pk}\"></i>
                             </div>
                             <div class=\"subtask_block drop_down_list invisible\">
                                 <div class=\"description\">There are no subtasks yet
@@ -56,11 +56,17 @@ var is_menu_opened = 0;
     };
 
     // Update is_favorite field
-    function updateFavoriteStatus() {
-
+    function updateFavoriteStatus(obj, url) {
+        $.ajax({
+	            method: 'post',
+                data: {'csrfmiddlewaretoken': getCookie('csrftoken')},
+                url: url,
+                success: function(data) {
+                    if (data.is_successful)
+                        obj.toggleClass('far fas');
+                }
+        });
     };
-
-
 
     function getCookie(name) {
     let cookieValue = null;

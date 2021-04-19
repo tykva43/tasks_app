@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.core.validators import validate_email as django_email_validator
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -151,4 +152,14 @@ def get_task_info_form(request):
 
 
 def update_favorite_status(request):
-    ...
+    task_pk = request.GET.get("task_pk")
+    is_successful = True
+    user_id = request.user.id
+    try:
+        task = Task.objects.get(id=task_pk, group__users__id=user_id)
+    except ObjectDoesNotExist:
+        is_successful = False
+    else:
+        task.is_favorite = not task.is_favorite
+        task.save(update_fields=["is_favorite"])
+    return JsonResponse({'is_successful': is_successful})
