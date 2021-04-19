@@ -45,7 +45,7 @@
                             {% for task in tasklist.tasks.all %}
                             <div class="expander_wrapper">
                                 <div class="task_block_wrapper">
-                                    <div class="expander task_expander">
+                                    <div class="expander task_expander rotated">
                                         <i class="fas fa-angle-down"></i>
                                     </div>
                                     <div class="list_elem task_block pointer flex_div">
@@ -63,7 +63,7 @@
                                     {% endif %}
                                 </div>
                                 <!-- Subtask list -->
-                                <div class="subtask_block drop_down_list">
+                                <div class="subtask_block drop_down_list invisible">
                                     {% for subtask in task.subtasks.all %}
                                         <div class="list_elem subtask_block pointer flex_div">
                                             {% if subtask.is_completed %}
@@ -104,14 +104,20 @@
 {% endblock content %}
 {% block javascript %}
         $(document).ready(function () {
+
+            // Change is_favorite status
+            $('.fa-star').on('click', function() {
+                var url = "{% url 'update_favorite_status' %}?task_pk=" + $(this).attr('id').substr(1); // get the task id value
+            });
+
+            // Call AJAX for creating task
             $("#create_form").submit(function(e) {
-            alert("submit");
                 e.preventDefault(); // avoid to execute the actual submit of the form.
                 if(!e.isDefaultPrevented()){
                     e.returnValue = false;
             }
                 var form = $(this);
-                var url = 'task/add/'; //form.attr('action');   // URL
+                var url = "{% url 'add_task' group.id %}";  // URL
                 console.log(url);
                 $.ajax({
 	                method: 'post',
@@ -120,7 +126,6 @@
                     success: function(data)
                     {
                         insertTask(eval(data['new_task'])[0]);
-                        console.log('data',eval(data['new_task']));
                     }
                 });
             });
@@ -133,7 +138,7 @@
                 var status = !$(this).hasClass('fa-check-square-o');
                 $.ajax({
                     data: {status: status, csrfmiddlewaretoken: getCookie('csrftoken')},
-                    url: "/task/" + id + "/status/update/",         // URL
+                    url: "{% url 'update_task_status' %}?task_pk=" + id,         // URL
                     type: "POST",
                     // on success
                     success: function (response) {
@@ -155,7 +160,7 @@
                 var status = !subtask_marker.hasClass('fa-check-square-o');
                 $.ajax({
                     data: {status: status,csrfmiddlewaretoken: getCookie('csrftoken')},
-                    url: "/subtask/" + id + "/status/update/",         // URL
+                    url: "{% url 'update_subtask_status' %}?subtask_pk=" + id,         // URL
                     type: "POST",
                     // on success
                     success: function (response) {

@@ -39,8 +39,9 @@ def validate_email(request):
 
 
 @login_required
-def update_task_status(request, task_pk):
+def update_task_status(request):
     """Update task status"""
+    task_pk = request.GET.get("task_pk")
     user_id = request.user.id
     is_successful = True
     try:
@@ -70,8 +71,9 @@ def update_task_status(request, task_pk):
 
 
 @login_required
-def update_subtask_status(request, subtask_pk):
+def update_subtask_status(request):
     """Update subtask status"""
+    subtask_pk = request.GET.get("subtask_pk")
     user_id = request.user.id
     is_successful = True
     is_task_toggled = False
@@ -115,6 +117,7 @@ def update_subtask_status(request, subtask_pk):
 
 
 def add_task(request, group_pk):
+    """Create new task"""
     is_successful = False
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -135,7 +138,8 @@ def add_task(request, group_pk):
     return JsonResponse({'is_successful': is_successful})
 
 
-def get_task_info_form(request, task_pk):
+def get_task_info_form(request):
+    task_pk = request.GET.get("task_pk")
     user_id = request.user.id
     print(user_id)
     task = Task.objects.get(id=task_pk, group__users__id=user_id)
@@ -144,3 +148,7 @@ def get_task_info_form(request, task_pk):
     print(task_form.as_p)
     return HttpResponse(task_form.renderer)
     # return JsonResponse({'task': 'task'})
+
+
+def update_favorite_status(request):
+    ...

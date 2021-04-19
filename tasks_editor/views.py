@@ -113,9 +113,8 @@ class DetailGroup(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Tasklists'
         group_pk = self.kwargs.get('group_pk')
-        context['task_form'] = TaskForm(user=self.request.user.id, group=group_pk, initial={'group_id': group_pk})
-        # !!! Обращение к модели
-        context['tasklists'] = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('tasks').\
+        context['task_form'] = TaskForm(user=self.request.user.id, group=group_pk)
+        context['tasklists'] = TaskList.objects.filter(group_id=group_pk).prefetch_related('tasks').\
             prefetch_related('tasks__subtasks')
         return context
 
