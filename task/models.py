@@ -32,6 +32,9 @@ class TaskList(models.Model):
     class Meta:
         default_related_name = 'tasklists'
 
+    def __str__(self):
+        return self.title
+
 
 class Task(models.Model):
     NOTIFICATION_TYPES = (
@@ -45,11 +48,6 @@ class Task(models.Model):
         ('medium', 'Medium priority'),
         ('low', 'Low priority')
     )
-    STATUSES = (
-        ('on', 'On progress'),
-        ('new', 'Created'),
-        ('ready', 'Completed')
-    )
 
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300, null=True)
@@ -60,7 +58,6 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True)
-    # status = models.CharField(max_length=7, choices=STATUSES, default='new')
 
     tasklist = models.ForeignKey('TaskList', on_delete=models.CASCADE, null=True)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)

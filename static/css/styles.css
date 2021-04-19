@@ -414,7 +414,7 @@ a.link img {
 }
 
 .tasklist_block {
-
+    width: -webkit-fill-available;
 }
 #tasklists {
     margin-left: 20px;
@@ -499,9 +499,29 @@ body::-webkit-scrollbar-track {
     border: none;
 }
 
-.task_detail {
+.task_form {
     background-color: #d9bdd2;
     font-size: 22px;
     height: max-content;
     padding: 1%;
-    }
+    position: fixed;
+    margin-left: 50%;
+    bottom: 20px;
+}
+.fa-star {
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+}
+.fa, .fas {
+    text-align: center;
+    vertical-align: baseline;
+}
+.pointer {
+    cursor: pointer;
+}
+.fa-angle-down {
+    margin: auto;
+    height: 25px;
+    font-size: 25px;
+}

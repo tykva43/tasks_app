@@ -11,9 +11,17 @@ from task.models import Task, Group, TaskList
     #task_group = forms.ChoiceField()
 
 class TaskForm(forms.ModelForm):
+
+    def __init__(self, user, group, *args, **kwargs):
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['tasklist'].queryset = TaskList.objects.filter(group__users__id=user, group_id=group)#.filter(group__user=user)
+
+        # self.fields['group'].queryset = Group.objects.filter(users__id=user)
+
     class Meta:
         model = Task
-        exclude = ('group', 'user')
+        exclude = ('completed_at', 'is_completed', 'group')
+
 
 #class TaskForm(forms.Form):
 #    title = forms.CharField(max_length=100)

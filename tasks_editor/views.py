@@ -111,17 +111,12 @@ class DetailGroup(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Your Groups'
-        context['task_form'] = TaskForm
+        context['title'] = 'Tasklists'
+        group_pk = self.kwargs.get('group_pk')
+        context['task_form'] = TaskForm(user=self.request.user.id, group=group_pk, initial={'group_id': group_pk})
         # !!! Обращение к модели
-        # context['tasks'] = Task.objects.filter(group_id=self.kwargs['group_pk'])
-        # tasklists = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('tasks').\
-        #     prefetch_related('tasks__subtasks')
         context['tasklists'] = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('tasks').\
             prefetch_related('tasks__subtasks')
-        # tasklists = TaskList.objects.filter(group_id=self.kwargs['group_pk']).prefetch_related('task_set')
-        # print(tasklists[1].tasks.all()[0].subtasks.all()[0])
-        # context['tasklists'] = TaskList.objects.filter(id=self.kwargs['group_pk'], users__id=self.request.user.id)
         return context
 
     def get_object(self):
@@ -186,7 +181,6 @@ class CreateTaskList(CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
         context['title'] = 'Tasklist Creation'
         context['group_pk'] = self.kwargs['group_pk']
         return context

@@ -6,7 +6,7 @@ from .models import Task, User, Group
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ('id', 'title', 'content', 'created_at', 'user_id')
+        fields = '__all__'
 
 
 class GroupSerializer(serializers.ModelSerializer):

@@ -42,8 +42,9 @@
 .accounts_content {
     min-width: 270px;
     margin: auto;
-    background-color: rgb(117, 200, 193);
-    border-radius: 40px;
+    /*background-color: rgb(117, 200, 193);*/
+    background-color: #472334;
+    /*border-radius: 40px;*/
     font-family: YanoneKaffeesatz;
     box-shadow: 0.4em 0.4em 5px rgba(74,145,142,0.8);
     padding: 20px 40px 40px 40px;

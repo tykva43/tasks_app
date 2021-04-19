@@ -55,10 +55,12 @@ urlpatterns = [
     path('group/<int:group_pk>/tasklist/<int:tasklist_pk>/', views.DetailTaskList.as_view(), name='detail_tasklist'),
 
     # Tasks
-    path('task/<int:pk>/status/update/', ajax.update_task_status, name='update_task_status'),
+    path('task/<int:task_pk>/status/update/', ajax.update_task_status, name='update_task_status'),
+    path('group/<int:group_pk>/task/add/', ajax.add_task, name='add_task'),
+    path('task/form/<int:task_pk>/info/', ajax.get_task_info_form, name='get_task_info_form'),
 
     # Subtasks
-    path('subtask/<int:pk>/status/update/', ajax.update_subtask_status, name='update_subtask_status'),
+    path('subtask/<int:subtask_pk>/status/update/', ajax.update_subtask_status, name='update_subtask_status'),
 
 
     # User actions

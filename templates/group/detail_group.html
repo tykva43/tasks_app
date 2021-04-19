@@ -39,33 +39,33 @@
                         </a>
                         <i class="fa fa-ellipsis-h"></i>
                     </div>
-                    <div class="tasklist_block_wrapper">
-                        <div class="tasklist_block drop_down_list">
+                    <div class="tasklist_block_wrapper"">
+                        <div class="tasklist_block drop_down_list" id="l{{tasklist.id}}">
 
                             {% for task in tasklist.tasks.all %}
                             <div class="expander_wrapper">
-                                <div class="expander task_expander">
-                                    <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
-                                </div>
-                                <div class="list_elem task_block flex_div">
-                                    {% if task.is_completed %}
-                                        <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                    {% else %}
-                                        <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                    {% endif %}
-                                    {{ task.title }}
-
+                                <div class="task_block_wrapper">
+                                    <div class="expander task_expander">
+                                        <i class="fas fa-angle-down"></i>
+                                    </div>
+                                    <div class="list_elem task_block pointer flex_div">
+                                        {% if task.is_completed %}
+                                            <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                        {% else %}
+                                            <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                        {% endif %}
+                                        {{ task.title }}
+                                    </div>
                                     {% if task.is_favorite %}
                                         <i class="fas fa-star"></i>
                                     {% else %}
                                         <i class="far fa-star"></i>
                                     {% endif %}
                                 </div>
-
                                 <!-- Subtask list -->
                                 <div class="subtask_block drop_down_list">
                                     {% for subtask in task.subtasks.all %}
-                                        <div class="list_elem subtask_block flex_div">
+                                        <div class="list_elem subtask_block pointer flex_div">
                                             {% if subtask.is_completed %}
                                                 <i class="fa fa-check-square-o subtask_marker" id="s{{subtask.id}}" aria-hidden="true"></i>
                                             {% else %}
@@ -73,6 +73,8 @@
                                             {% endif %}
                                             {{ subtask.title }}
                                         </div>
+                                    {% empty %}
+                                        <div class="description">There are no subtasks yet</div>
                                     {% endfor %}
                                 </div>
 
@@ -88,14 +90,41 @@
             {% endfor %}
         </div>
 
-        <div class="task_detail">
-            {{task_form.as_p}}
+
+        <div class="form_div task_form">
+            <h2>Task creating</h2>
+            <form id="create_form" method="post">
+                {% csrf_token %}
+                {{task_form.as_p}}
+                <button class="button create_task" type="submit">Create</button>
+            </form>
         </div>
     </div>
 
 {% endblock content %}
 {% block javascript %}
         $(document).ready(function () {
+            $("#create_form").submit(function(e) {
+            alert("submit");
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                if(!e.isDefaultPrevented()){
+                    e.returnValue = false;
+            }
+                var form = $(this);
+                var url = 'task/add/'; //form.attr('action');   // URL
+                console.log(url);
+                $.ajax({
+	                method: 'post',
+                    data: $(this).serialize(),
+                    url: url,
+                    success: function(data)
+                    {
+                        insertTask(eval(data['new_task'])[0]);
+                        console.log('data',eval(data['new_task']));
+                    }
+                });
+            });
+
             // If the user checks or unchecks the task completion marker
             $('.task_marker').on('click', function () {
                 // create an AJAX call
@@ -103,7 +132,7 @@
                 var id = $(this).attr('id').substr(1); // get the task id value
                 var status = !$(this).hasClass('fa-check-square-o');
                 $.ajax({
-                    data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
+                    data: {status: status, csrfmiddlewaretoken: getCookie('csrftoken')},
                     url: "/task/" + id + "/status/update/",         // URL
                     type: "POST",
                     // on success
@@ -116,7 +145,6 @@
                         }
                     }
                 });
-                return false;
             });
 
             // If the user checks or unchecks the subtask completion marker
@@ -126,7 +154,7 @@
                 var id = subtask_marker.attr('id').substr(1); // get the task id value
                 var status = !subtask_marker.hasClass('fa-check-square-o');
                 $.ajax({
-                    data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
+                    data: {status: status,csrfmiddlewaretoken: getCookie('csrftoken')},
                     url: "/subtask/" + id + "/status/update/",         // URL
                     type: "POST",
                     // on success
@@ -139,7 +167,6 @@
                         }
                     }
                 });
-                return false;
             });
         })
     {% endblock javascript %}

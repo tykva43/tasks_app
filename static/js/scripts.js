@@ -17,9 +17,28 @@ function div(val, by){
 
     // Changes subtask status
     function subtaskMarkerClicked(obj, is_task_toggled) {
-        if (is_task_toggled)
-            obj.parents('.task_marker').toggleClass('fa-square-o fa-check-square-o');
+        if (is_task_toggled) {
+            obj.parents('.subtask_block').siblings('.task_block').find('.task_marker').eq(0).toggleClass('fa-square-o fa-check-square-o');
+        }
         obj.toggleClass('fa-square-o fa-check-square-o');
+    };
+    // Insert new task
+    function insertTask(new_task) {
+    var is_favorite = new_task.fields.is_favorite? "fas": "far";
+    var task_block = `<div class=\"expander_wrapper\">
+                      <div class=\"task_block_wrapper\">
+                      <div class=\"expander task_expander\">
+                      <i class=\"fas fa-angle-down\"></i></div>
+                      <div class=\"list_elem task_block pointer flex_div\">
+                      <i class=\"fa fa-square-o task_marker\"
+                      id=\"t${new_task.pk}\" aria-hidden=\"true\"></i>
+                      ${new_task.fields.title}</div>
+                      <i class=\"${is_favorite} fa-star\"></i>
+                      </div></div><div class=\"subtask_block drop_down_list\">
+                      <div class=\"description\">There are no subtasks yet</div></div>`;
+        var tasklist_id = "#l" + new_task.fields.tasklist;
+        $(tasklist_id).children('.description').remove();    // Remove the description that there are no tasks in this task list
+        $(tasklist_id).append(task_block);                   // Append task block in html
     };
 
     function getCookie(name) {
@@ -41,6 +60,30 @@ function div(val, by){
 $(document).ready(function() {
 
     changeContentWidth();
+
+    // When you double-click on the task element, display information about the task
+    $('.task_block').on('dblclick', function() {
+        var id = $(this).find('.task_marker').attr('id').substr(1);
+
+        // create an AJAX call
+        $.ajax({
+            //data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
+            url: "/task/form/" + id + "/info/",         // URL
+            type: "GET",
+            // on success
+            success: function (response) {
+                console.log(response);
+                /*if (response.is_successful == true) {
+                    console.log(task);
+                }*/
+                /*else {
+                    // todo: show message about failure
+                }*/
+            }
+        });
+    });
+
+    $( "#id_deadline" ).datetimepicker({format: 'Y-m-d H:i'});
 
     $('.expander').on('click', function() {
         $(this).toggleClass('rotated');
@@ -70,7 +113,7 @@ $(document).ready(function() {
         else {
             $(".tooltip").text($data_tooltip)
             .css({"top": event.pageY + 5,
-                  "left": event.pageX -75 })
+                  "left": event.pageX - 75 })
             .show();
         }
 
