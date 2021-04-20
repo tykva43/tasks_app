@@ -27,10 +27,11 @@ class Membership(models.Model):
 
 class TaskList(models.Model):
     title = models.CharField(max_length=100)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)  # todo: null=false
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    readiness = models.IntegerField(default=0)
 
     class Meta:
-        default_related_name = 'tasklists'
+        default_related_name = 'tasklist'
 
     def __str__(self):
         return self.title

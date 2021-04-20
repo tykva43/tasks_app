@@ -1,12 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import F
 from django.http import JsonResponse, HttpResponse
 from django.core.validators import validate_email as django_email_validator
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils import timezone
 from django.core import serializers
 
-from task.models import User, Task, Subtask
+from task.models import User, Task, Subtask, TaskList
 from tasks_editor.forms import TaskForm
 
 
@@ -45,6 +44,7 @@ def update_task_status(request):
     task_pk = request.GET.get("task_pk")
     user_id = request.user.id
     is_successful = True
+    response = {}
     try:
         status_for_update = request.POST.get('status') == 'true'
     except KeyError:
@@ -52,7 +52,8 @@ def update_task_status(request):
     else:
         # Updating the status of a task and the statuses of related subtasks.
         try:
-            task = Task.objects.prefetch_related('subtasks').get(id=task_pk, group__users__id=user_id)
+            task = Task.objects.select_related('tasklist').prefetch_related('subtasks')\
+                .get(id=task_pk, group__users__id=user_id)
         except ObjectDoesNotExist:
             is_successful = False
         else:
@@ -62,13 +63,21 @@ def update_task_status(request):
             task.completed_at = datetime_now
             task.save(update_fields=["is_completed", "completed_at"])
 
+            # Update tasklist readiness
+            readiness = task.tasklist.readiness + (1 if status_for_update else -1)
+            response['readiness'] = readiness / Task.objects.filter(tasklist_id=task.tasklist.id).count()
+            TaskList.objects.filter(id=task.tasklist.id).update(readiness=readiness)
+
             # Updating the statuses of related subtasks if task marked as completed.
             for subtask in task.subtasks.all():
                 subtask.is_completed = status_for_update
                 subtask.completed_at = datetime_now
+
             subtask.task.subtasks.update(is_completed=status_for_update, completed_at=datetime_now)
+
     finally:
-        return JsonResponse({'is_successful': is_successful})
+        response['is_successful'] = is_successful
+        return JsonResponse(response)
 
 
 @login_required
@@ -130,28 +139,37 @@ def add_task(request, group_pk):
             instance.save()
             is_successful = True
             serialized_task = serializers.serialize('json', [instance])
-            print(serialized_task)
             return JsonResponse({'is_successful': is_successful, 'new_task': serialized_task})
         else:
-            print(form.errors)
-    else:
-        ...
+            # print(form.errors)
+            ...
     return JsonResponse({'is_successful': is_successful})
 
 
-def get_task_info_form(request):
-    task_pk = request.GET.get("task_pk")
+def get_task_info(request, group_pk, task_pk):
+    """Send task info by task_pk from url params"""
     user_id = request.user.id
     print(user_id)
-    task = Task.objects.get(id=task_pk, group__users__id=user_id)
+    task = Task.objects.filter(id=task_pk, group__users__id=user_id).first()
     print(task)
-    task_form = TaskForm(user_id, task)
-    print(task_form.as_p)
-    return HttpResponse(task_form.renderer)
-    # return JsonResponse({'task': 'task'})
+    # task_form = TaskForm(user_id, group_pk, task)
+    # print(serializers.serialize('json', [task]))
+    # return HttpResponse(task_form)
+    return JsonResponse({'task': serializers.serialize('json', [task])})
+
+
+def delete_task(request):
+    """Delete a task by task_pk"""
+    ...
+
+
+def update_task(request):
+    """"""
+    ...
 
 
 def update_favorite_status(request):
+    """Change the is_favorite status to the opposite"""
     task_pk = request.GET.get("task_pk")
     is_successful = True
     user_id = request.user.id

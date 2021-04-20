@@ -39,6 +39,9 @@
                         </a>
                         <i class="fa fa-ellipsis-h"></i>
                     </div>
+                    <div class="readiness" id="r{{tasklist.id}}">
+                        <div class="ready"></div>
+                    </div>
                     <div class="tasklist_block_wrapper"">
                         <div class="tasklist_block drop_down_list" id="l{{tasklist.id}}">
 
@@ -105,6 +108,27 @@
 {% block javascript %}
         $(document).ready(function () {
 
+            // When you double-click on the task element, display information about the task
+            $('.task_block').on('dblclick', function() {
+                var id = $(this).find('.task_marker').attr('id').substr(1);
+
+                // create an AJAX call
+                $.ajax({
+                    url: "task/" + id + "/info/",         // URL
+                    type: "GET",
+                    // on success
+                    success: function (response) {
+                        console.log(response);
+                        if (response.is_successful == true) {
+                            console.log(task);
+                        }
+                        /*else {
+                            // todo: show message about failure
+                        }*/
+                    }
+                });
+            });
+
             // Change is_favorite status
             $('.fa-star').on('click', function() {
                 var id = $(this).attr('id').substr(1); // get the task id value
@@ -146,6 +170,8 @@
                     success: function (response) {
                         if (response.is_successful == true) {
                             taskMarkerClicked(task_marker);
+                            var readyElemId = '#r' + task_marker.parents('.tasklist_block').eq(0).attr('id').substr(1);
+                            updateReadiness($(readyElemId), response.readiness);
                         }
                         else {
                             // todo: show message about failure

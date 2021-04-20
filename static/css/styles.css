@@ -420,6 +420,7 @@ a.link img {
     margin-left: 20px;
     min-width: max-content;
     width: 50%;
+    margin-right: 10px;
 }
 .drop_down_btn {
     background-color: black;
@@ -505,6 +506,8 @@ body::-webkit-scrollbar-track {
     height: min-content;
     padding: 1%;
     transition: 0.2s linear;
+    margin-left: auto;
+    margin-right: auto;
 }
 .fa-star {
     cursor: pointer;
@@ -522,4 +525,17 @@ body::-webkit-scrollbar-track {
     margin: auto;
     height: 25px;
     font-size: 25px;
+}
+
+.readiness {
+    height: 5px;
+    border-style: solid;
+    border-width: thin;
+    border-color: cornflowerblue;
+}
+.ready {
+    height: 100%;
+    background-color: red;
+    width: 0%;
+    transition: 0.5s linear;
 }

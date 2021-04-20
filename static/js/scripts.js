@@ -1,6 +1,10 @@
 var is_menu_opened = 0;
+var MEDIUM_LVL = '#ffd700',
+    LOW_LVL = '#cc0000',
+    HIGH_LVL = '#7cfc00'
 
-    function div(val, by){
+
+    function div(val, by) {
         return (val - val % by) / by;
     }
 
@@ -9,7 +13,7 @@ var is_menu_opened = 0;
         $(this).parents('.expander_wrapper').eq(0).find('.drop_down_list').toggleClass('invisible');
     }
 
-    // Changes task marker status and statuses of related subtasks
+    // Changes task marker status and statuses of related subtasks and update tasklist readiness
     function taskMarkerClicked(obj) {
         obj.toggleClass('fa-square-o fa-check-square-o');
         var is_task_completed = obj.hasClass('fa-check-square-o');
@@ -20,6 +24,19 @@ var is_menu_opened = 0;
                $(this).toggleClass('fa-square-o fa-check-square-o');
         });
     };
+
+    function updateReadiness(obj, tlReadiness) {
+        console.log('im here')
+        readinessInPercents = tlReadiness * 100;
+        var color;
+        if (readinessInPercents <= 25)
+            color = LOW_LVL;
+        else if (readinessInPercents <= 75)
+            color = MEDIUM_LVL;
+            else
+            color = HIGH_LVL;
+        obj.children('.ready').css({'width': readinessInPercents.toString() + '%', 'background-color': color});
+    }
 
     // Changes subtask status
     function subtaskMarkerClicked(obj, is_task_toggled) {
@@ -84,13 +101,30 @@ var is_menu_opened = 0;
     return cookieValue;
     };
 
-
+    // Update the readiness value for all tasklists in the document
+    function updateAllTasklistsReadiness() {
+        var tasklists = $('#tasklists').children('.expander_wrapper');
+        tasklists.each(function() {
+            var tasks = $(this).find('.tasklist_block').children('.expander_wrapper');
+            var tasksCount = tasks.length;
+            var completedTasksCount = 0;
+            tasks.find('.task_marker').each(function() {
+                completedTasksCount += $(this).hasClass('fa-check-square-o')? 1 : 0;
+            })
+            console.log('tasksCount', tasksCount);
+            console.log('completedTasksCount', completedTasksCount);
+            console.log('completedTasksCount/tasksCount', completedTasksCount/tasksCount);
+            updateReadiness($(this).find('.readiness'), completedTasksCount/tasksCount);
+        });
+        var tasks =
+        console.log(tasklists);
+    }
 
 $(document).ready(function() {
 
     changeContentWidth();
 
-
+    updateAllTasklistsReadiness();
 
     $(window).scroll(function(){
         var scrollTop = $(this).scrollTop();
@@ -109,45 +143,17 @@ $(document).ready(function() {
             $('.task_form').css({'margin-top': "0px"});
     });
 
-    // When you double-click on the task element, display information about the task
-    $('.task_block').on('dblclick', function() {
-        var id = $(this).find('.task_marker').attr('id').substr(1);
-
-        // create an AJAX call
-        $.ajax({
-            //data: {status: status, pk: id, csrfmiddlewaretoken: getCookie('csrftoken')},
-            url: "/task/form/" + id + "/info/",         // URL
-            type: "GET",
-            // on success
-            success: function (response) {
-                console.log(response);
-                /*if (response.is_successful == true) {
-                    console.log(task);
-                }*/
-                /*else {
-                    // todo: show message about failure
-                }*/
-            }
-        });
-    });
-
     $( "#id_deadline" ).datetimepicker({format: 'Y-m-d H:i'});
 
     $('.expander').on('click', onExpanderClicked);
 
     $('.drop_down_menu').on('click', function() { $(this).children('.drop_down_menu_content').toggleClass('invisible') });
 
-    // Toggle class for tasks and subtasks markers
-    //$('.fa-check-square-o').on('click', function() { $(this).toggleClass('fa-square-o fa-check-square-o') });
-    //$('.fa-square-o').on('click', function() { $(this).toggleClass('fa-square-o fa-check-square-o') });
-
-
-
     $('.menu_item').on('click', menuItemClicked);
 
     $(window).on( "resize", changeContentWidth);
 
-    $("[data-tooltip]").mousemove(function(event) {
+   /* $("[data-tooltip]").mousemove(function(event) {
         $data_tooltip = $(this).attr("data-tooltip");
         if ($(".left_min_menu").is(':hidden')) {
              $(".tooltip").text($data_tooltip)
@@ -169,7 +175,7 @@ $(document).ready(function() {
                         "top": 0,
                         "left": 0
                      });
-    });
+    });*/
 });
 
 function changeContentWidth() {
@@ -181,7 +187,6 @@ function changeContentWidth() {
 
     $(".content").css("width", ( $(window).width() - content_outer_width - left_menu_width - left_min_menu_width).toString()+ "px");
     $('.content').css('margin-left', content_left_margin.toString() + 'px');
-
 }
 
 function menuItemClicked() {
