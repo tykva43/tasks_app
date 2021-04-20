@@ -130,9 +130,9 @@ def add_task(request, group_pk):
     """Create new task"""
     is_successful = False
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
+        # Create a form instance and populate it with data from the request:
         form = TaskForm(request.user.id, group_pk, request.POST)
-        # check whether it's valid:
+        # Check whether it's valid:
         if form.is_valid():
             instance = form.save(commit=False)
             instance.group_id = group_pk
@@ -149,13 +149,8 @@ def add_task(request, group_pk):
 def get_task_info(request, group_pk, task_pk):
     """Send task info by task_pk from url params"""
     user_id = request.user.id
-    print(user_id)
-    task = Task.objects.filter(id=task_pk, group__users__id=user_id).first()
-    print(task)
-    # task_form = TaskForm(user_id, group_pk, task)
-    # print(serializers.serialize('json', [task]))
-    # return HttpResponse(task_form)
-    return JsonResponse({'task': serializers.serialize('json', [task])})
+    task = Task.objects.filter(id=task_pk, group__users__id=user_id).first()    # todo: check if task exists
+    return JsonResponse({'is_successful': True, 'task': serializers.serialize('json', [task])})
 
 
 def delete_task(request):

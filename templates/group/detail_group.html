@@ -13,13 +13,9 @@
                 <button class="drop_down_btn">Add</button>
                 <div class="drop_down_menu_content invisible">
                     <a href="{% url 'add_tasklist' group.id %}">Tasklist</a>
-                    <a href="#">Task</a>
+                    <a class="create_task_btn">Task</a>
                 </div>
             </div>
-
-<!--            <a href="{% url 'add_tasklist' group.id %}">-->
-<!--                <div class="add_button drop_down_btn">Add</div>-->
-<!--            </a>-->
         </div>
         <div class="memberships"></div>
     </div>
@@ -32,11 +28,11 @@
                 <div class="expander_wrapper">
                     <div class="tasklist_title_wrapper">
                         <div class="expander">
-                            <img class="triangle rotated" src="{% static "imgs/pointer.png" %}">
+                            <i class="fas fa-angle-down"></i>
                         </div>
-                        <a href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">
+<!--                        <a style="color: white;" href="{% url 'detail_tasklist' group_pk=group.id tasklist_pk=tasklist.id %}">-->
                             <div class="tasklist_title">{{ tasklist.title }}</div>
-                        </a>
+<!--                        </a>-->
                         <i class="fa fa-ellipsis-h"></i>
                     </div>
                     <div class="readiness" id="r{{tasklist.id}}">
@@ -95,10 +91,14 @@
 
 
         <div class="form_div task_form">
-            <h2>Task creating</h2>
-            <form id="create_form" method="post">
+            <h2 id="task_creating_h">Task creating</h2>
+            <form class="form_as_table create_form" method="post">
                 {% csrf_token %}
-                {{task_form.as_p}}
+                <table>
+                    <tbody>
+                        {{task_form.as_table}}
+                    </tbody>
+                </table>
                 <button class="button create_task" type="submit">Create</button>
             </form>
         </div>
@@ -106,28 +106,76 @@
 
 {% endblock content %}
 {% block javascript %}
-        $(document).ready(function () {
 
-            // When you double-click on the task element, display information about the task
-            $('.task_block').on('dblclick', function() {
-                var id = $(this).find('.task_marker').attr('id').substr(1);
-
-                // create an AJAX call
-                $.ajax({
-                    url: "task/" + id + "/info/",         // URL
-                    type: "GET",
-                    // on success
-                    success: function (response) {
-                        console.log(response);
-                        if (response.is_successful == true) {
-                            console.log(task);
-                        }
-                        /*else {
-                            // todo: show message about failure
-                        }*/
-                    }
-                });
+    function onSubmitUpdateForm() {
+        // Call AJAX for task info updating
+        $(".update_form").submit(function(e) {
+            console.log('UPDATING');
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            if(!e.isDefaultPrevented()){
+                e.returnValue = false;
+            }
+            var form = $(this);
+            var url = "{% url 'update_task' %}";  // URL
+            $.ajax({
+                method: 'put',
+                data: $(this).serialize(),
+                url: url,
+                success: function(response)
+                {
+                    console.log('UPDATING');
+                    // insertTask(eval(response['new_task'])[0]);
+                }
             });
+        });
+    };
+
+    function onSubmitCreateForm() {
+        // Call AJAX for creating a task
+        $(".create_form").submit(function(e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            if(!e.isDefaultPrevented()){
+                e.returnValue = false;
+            }
+            var form = $(this);
+            var url = "{% url 'add_task' group.id %}";  // URL
+            $.ajax({
+                method: 'post',
+                data: $(this).serialize(),
+                url: url,
+                success: function(response) {
+                    insertTask(eval(response['new_task'])[0]);
+                }
+            });
+        });
+    };
+
+    $(document).ready(function () {
+
+        onSubmitCreateForm();
+
+        // When you double-click on the task element, display information about the task
+        $('.task_block').on('dblclick', function() {
+            var id = $(this).find('.task_marker').attr('id').substr(1);
+
+            // create an AJAX call
+            $.ajax({
+            url: "task/" + id + "/info/",         // URL
+            type: "GET",
+            // on success
+            success: function (response) {
+                if (response.is_successful == true) {
+                    // console.log(response.task);
+                        console.log(eval(response['task'])[0]);
+                        changeTaskFormType('update');
+                        fillInTaskForm(eval(response['task'])[0]);
+                }
+                /*else {
+                    // todo: show message about failure
+                }*/
+                }
+            });
+        });
 
             // Change is_favorite status
             $('.fa-star').on('click', function() {
@@ -136,25 +184,7 @@
                 updateFavoriteStatus($(this), url);
             });
 
-            // Call AJAX for creating task
-            $("#create_form").submit(function(e) {
-                e.preventDefault(); // avoid to execute the actual submit of the form.
-                if(!e.isDefaultPrevented()){
-                    e.returnValue = false;
-            }
-                var form = $(this);
-                var url = "{% url 'add_task' group.id %}";  // URL
-                console.log(url);
-                $.ajax({
-	                method: 'post',
-                    data: $(this).serialize(),
-                    url: url,
-                    success: function(data)
-                    {
-                        insertTask(eval(data['new_task'])[0]);
-                    }
-                });
-            });
+
 
             // If the user checks or unchecks the task completion marker
             $('.task_marker').on('click', function () {
@@ -167,7 +197,7 @@
                     url: "{% url 'update_task_status' %}?task_pk=" + id,         // URL
                     type: "POST",
                     // on success
-                    success: function (response) {
+                    success: function(response) {
                         if (response.is_successful == true) {
                             taskMarkerClicked(task_marker);
                             var readyElemId = '#r' + task_marker.parents('.tasklist_block').eq(0).attr('id').substr(1);

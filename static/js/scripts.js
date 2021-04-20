@@ -26,7 +26,6 @@ var MEDIUM_LVL = '#ffd700',
     };
 
     function updateReadiness(obj, tlReadiness) {
-        console.log('im here')
         readinessInPercents = tlReadiness * 100;
         var color;
         if (readinessInPercents <= 25)
@@ -101,24 +100,70 @@ var MEDIUM_LVL = '#ffd700',
     return cookieValue;
     };
 
+    // Change type (for creating or for updating a task) for task form
+    function changeTaskFormType(type) {
+        switch (type) {
+            case "update":
+                $('.task_form').find('h2').text('Task Info');
+                $('.task_form').find('form').toggleClass('create_form', false).toggleClass('update_form', true);
+                $('.task_form').find('.create_task').text('Update');
+                onSubmitUpdateForm();
+                $('.task_form').find('label').css({ 'color': 'white'});
+                $('.task_form').css({'background-color': 'rgb(110, 3, 35)'});
+                $('.task_form').children('h2').css({'color': 'white'});
+                break;
+            case "create":
+                $('.task_form').find('h2').text('Task creating');
+                $('.task_form').find('form').toggleClass('create_form', true).toggleClass('update_form', false);
+                $('.task_form').find('.create_task').text('Create');
+                $('.task_form').css({'background-color': '#dfdfdf', 'color': '#480323'});
+                $('.task_form').find('label').css({'color': '#480323'});
+                $('.task_form').children('h2').css({'color': '#480323'});
+                onSubmitCreateForm();
+                cleanTaskFormFields();
+        }
+    };
+
+    // Clean all the fields of task form
+    function cleanTaskFormFields() {
+        var form = $('.task_form').children('form');
+        form.find('#id_title').val('');
+        form.find('#id_description').text('');
+        form.find('#id_deadline').val('');
+        form.find('#id_notification').val($(form.find('#id_notification')).children('option').eq(0).val());
+        form.find('#id_priority').val($(form.find('#id_priority')).children('option').eq(0).val());
+        form.find('#id_is_favorite').prop("checked", false);
+        form.find('#id_tasklist').val($(form.find('#id_tasklist')).children('option').eq(0).val());
+    }
+
+    // Fill in task form with input task
+    function fillInTaskForm(task_info) {
+        var form = $('.task_form').children('form');
+        form.find('#id_title').val(task_info.fields.title);
+        form.find('#id_description').text(task_info.fields.description);
+        form.find('#id_deadline').val(task_info.fields.deadline);
+        form.find('#id_notification').val(task_info.fields.notification);
+        form.find('#id_priority').val(task_info.fields.priority);
+        form.find('#id_is_favorite').prop("checked", task_info.fields.is_favorite) ;
+        form.find('#id_tasklist').val(task_info.fields.tasklist);
+    };
+
     // Update the readiness value for all tasklists in the document
     function updateAllTasklistsReadiness() {
         var tasklists = $('#tasklists').children('.expander_wrapper');
         tasklists.each(function() {
             var tasks = $(this).find('.tasklist_block').children('.expander_wrapper');
-            var tasksCount = tasks.length;
+            // If there are no tasks, assign a value of 1 to avoid division by 0
+            var tasksCount = tasks.length? tasks.length : 1;
             var completedTasksCount = 0;
             tasks.find('.task_marker').each(function() {
                 completedTasksCount += $(this).hasClass('fa-check-square-o')? 1 : 0;
             })
-            console.log('tasksCount', tasksCount);
-            console.log('completedTasksCount', completedTasksCount);
-            console.log('completedTasksCount/tasksCount', completedTasksCount/tasksCount);
             updateReadiness($(this).find('.readiness'), completedTasksCount/tasksCount);
         });
-        var tasks =
-        console.log(tasklists);
     }
+
+
 
 $(document).ready(function() {
 
@@ -126,7 +171,11 @@ $(document).ready(function() {
 
     updateAllTasklistsReadiness();
 
-    $(window).scroll(function(){
+    $('.create_task_btn').on('click', function() {
+        changeTaskFormType('create');
+    });
+
+    $(window).scroll(function() {
         var scrollTop = $(this).scrollTop();
         var taskFormHeight = $('.task_form').outerHeight();
         var windowHeight = $(window).height();

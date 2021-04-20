@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import Textarea
 
 from task.models import Task, Group, TaskList
 
@@ -21,6 +22,9 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         exclude = ('completed_at', 'is_completed', 'group')
+        widgets = {
+            'description': Textarea(attrs={'rows': 6, 'cols': 18}),
+        }
 
 
 #class TaskForm(forms.Form):

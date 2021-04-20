@@ -3,18 +3,15 @@ html {
     font-family: YanoneKaffeesatz;
 }
 .left_menu {
-    /*display: none;*/
     width: 300px;
     height: 100vh;
-    background-color: #6b344e;
+    background-color: #6e0323;
     position: fixed;
     z-index: 2;
     margin-left: -300px;
     transition: 0.7s linear;
-    /*box-shadow: 0.4em 0.4em 7px rgba(55, 111, 107, 0.75);*/
 }
 .left_menu.pop_up_menu {
-    /*display: block;*/
     z-index: 5;
 }
 .left_menu a { text-decoration: none; }
@@ -35,7 +32,6 @@ html {
     box-shadow: 0.4em 0.4em 5px rgba(55, 111, 107, 0.8);
     cursor: pointer;
 }
-/*.group:hover, .add_button:hover { background-color: rgb(239, 98, 95); }*/
 .group:hover { background-color: rgb(239, 98, 95); }
 .control_button {
     position: relative;
@@ -56,7 +52,7 @@ html {
 .left_min_menu {
     width: 50px;
     height: 100vh;
-    background-color: #472334;
+    background-color: #480323;
     display: block;
     position: fixed;
     z-index: 10;
@@ -69,10 +65,6 @@ html {
     width: 30px;
     height: 30px;
     margin: 10px 10px 10px 10px;
-    /*margin-top: 25px;
-    margin-bottom: 25px;
-    margin-left: 22px;
-    margin-right: 22px;*/
     cursor: pointer;
     backface-visibility: hidden;
     position: absolute;
@@ -111,7 +103,6 @@ html {
     border-radius: 20%;
     margin: auto;
     cursor: pointer;
-    /* display: inline-block; */
     display: inline-flex;
     transition: transform 0.6s ease;
     opacity: 0.5;
@@ -128,12 +119,10 @@ html {
     transform: rotate(90deg);
 }
 .group_list, .drop_down_list {
-    /*display: block;*/
     display: table;
     transition: all 0.6s ease;
     transform: translateY(0px, 10px);
     opacity: 1;
-    /*margin-top: 10px;*/
 }
 a {
     text-decoration: none;
@@ -144,8 +133,6 @@ a {
     border-bottom-width: 2px;
     border-bottom-style: solid;
     height: 70px;
-    /*display: inline-flex;*/
-    /*display: flex;*/
 }
 .literal {
     color: rgb(255, 255, 255);
@@ -165,7 +152,6 @@ a {
 }
 .group_icon {
     height: 44px;
-    /*background-color: #ff2b2b;*/
     width: 44px;
     border-radius: 10%;
     margin-top: auto;
@@ -230,17 +216,14 @@ body {
     margin-left: 35px;
 }
 .expander_wrapper {
-    /*border-bottom-color: rgb(180, 180, 180);
-    border-bottom-width: 3px;;
-    border-bottom-style: solid;*/
     max-width: 650px;
+    min-width: min-content;
 }
 .title {
-    color: #bf344e;
+    color: #480323;
     font-size: 30px;
     text-align: left;
     padding-left: 10px;
-    /* display: inline-block; */
     margin: 0px;
     display: inline;
 }
@@ -261,12 +244,9 @@ a.link img {
     width: 20px;
 }
 .content {
-    /*padding: 40px;*/
     padding: 20px 45px 45px 45px;
     border-radius: 20px;
     transition: 0.7s linear;
-    /*margin-left: 30px;
-    margin-right: 30px;*/
     margin: 0px;
     font-size: 35px;
 }
@@ -279,8 +259,7 @@ a.link img {
 }
 
 /* <Slider> */
-.task_item {    /* flex: 0 0 25%; */
-    /* max-width: 25%; */
+.task_item {
     transition: all 0.6s ease;
     height: 150px;
     width: 150px;
@@ -288,37 +267,12 @@ a.link img {
     margin-left: 5px;
     margin-right: 5px;
     cursor: pointer;
-    /* display: inline-block; */
-    /* margin-left: 5px; */
-    /* margin-right: 5px;*/
 }
 .plus {
     margin: 30px;
     width: 90px;
     height: 90px;
 }
-
-/*.add_button {
-    width: 100px;
-    height: 50px;
-}*/
-/* </Slider> */
-/* </Content> */
-
-
-/* <Add Button> */
-/*
-.add_button {
-    background-color: rgb(102, 161, 161);
-    border-radius: 25px;
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    transition: 0.7s linear;
-}*/
 .add_group {
     margin: auto;
     text-align: center;
@@ -423,7 +377,7 @@ a.link img {
     margin-right: 10px;
 }
 .drop_down_btn {
-    background-color: black;
+    background-color: #480323;
     color: white;
     padding: 5px;
     font-family: YanoneKaffeesatz;
@@ -449,7 +403,7 @@ a.link img {
     display: block;
 }
 .drop_down_menu_content a:hover {background-color: white;}
-.drop_down_menu:hover .drop_down_btn {background-color: grey;}
+.drop_down_menu:hover .drop_down_btn {opacity: 0.5;}
 .task_block {
     height: 25px;
     font-size: 25px;
@@ -467,12 +421,13 @@ a.link img {
     height: max-content;
 }
 .tasklist_title_wrapper {
-    background-color:  #bdbdf2;	/*#E6E6FA;*/
+    background-color: rgb(72,3,35);
+    color: white;
     position: relative;
 }
 
 .tasklist_block_wrapper {
-    background-color:  #E6E6FA;
+    background-color: #e2c6d3;
 }
 .description {
     font-size: 20px;
@@ -485,7 +440,7 @@ body::-webkit-scrollbar {
     height: 10px;
 }
 body::-webkit-scrollbar-thumb {
-    background-color: #472334;
+    background-color: #480323;
     border-radius: 20px;
 }
 body::-webkit-scrollbar-track {
@@ -501,13 +456,17 @@ body::-webkit-scrollbar-track {
 }
 
 .task_form {
-    background-color: #d9bdd2;
+    border: thin solid rgb(72, 3, 35);
+    background-color: #dfdfdf;
     font-size: 22px;
     height: min-content;
-    padding: 1%;
+    padding: 3%;
     transition: 0.2s linear;
     margin-left: auto;
     margin-right: auto;
+}
+.task_form h2 {
+    color: #480323;
 }
 .fa-star {
     cursor: pointer;
@@ -529,13 +488,46 @@ body::-webkit-scrollbar-track {
 
 .readiness {
     height: 5px;
-    border-style: solid;
-    border-width: thin;
-    border-color: cornflowerblue;
+    border: thin solid rgb(72, 3, 35);
 }
 .ready {
     height: 100%;
     background-color: red;
     width: 0%;
     transition: 0.5s linear;
+}
+.fa-ellipsis-h {
+    font-size: 25px;
+    position: absolute;
+    top: 5px;
+}
+#task_creating_h {
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+.form_as_table {
+    padding: 10px;
+    color: #480323;
+}
+.form_as_table table tbody tr th {
+    text-align: -webkit-left;
+}
+.form_as_table p {
+    justify-content: space-between;
+    display: flex;
+}
+.form_as_table p label {
+    height: max-content;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 3px;
+}
+textarea {
+    min-width: 150px;
+    max-width: 373px;
+    max-height: 100px;
+}
+.create_task_btn {
+    cursor: pointer;
 }
