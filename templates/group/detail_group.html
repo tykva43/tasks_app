@@ -107,52 +107,67 @@
 {% endblock content %}
 {% block javascript %}
 
-    function onSubmitUpdateForm() {
-        // Call AJAX for task info updating
-        $(".update_form").submit(function(e) {
-            console.log('UPDATING');
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-            if(!e.isDefaultPrevented()){
-                e.returnValue = false;
-            }
-            var form = $(this);
-            var url = "{% url 'update_task' %}";  // URL
-            $.ajax({
-                method: 'put',
-                data: $(this).serialize(),
-                url: url,
-                success: function(response)
-                {
-                    console.log('UPDATING');
-                    // insertTask(eval(response['new_task'])[0]);
+    function updateTask(e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                if(!e.isDefaultPrevented()){
+                    e.returnValue = false;
                 }
-            });
+                var form = $(this);
+                var url = "{% url 'update_task' %}";  // URL
+                console.log($(this).serialize());
+                $.ajax({
+
+                    method: 'post',
+                    data: $(this).serialize(),
+                    url: url,
+                    success: function(response)
+                    {
+                        if (response.is_successful) {
+                            console.log('UPDATED');
+                            // insertTask(eval(response['new_task'])[0]);
+                        }
+                    }
+                });
+    };
+
+    function createTask(e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        if(!e.isDefaultPrevented()) {
+            e.returnValue = false;
+        }
+        $.ajax({
+            method: 'post',
+            data: $(this).serialize(),
+            url: "{% url 'add_task' group.id %}",
+            success: function(response) {
+                if (response.is_successful) {
+                    insertTask(eval(response['new_task'])[0]);
+                    updateAllTasklistsReadiness();
+                }
+            }
         });
     };
 
-    function onSubmitCreateForm() {
+    function onSubmitUpdateForm(isOn) {
+        // Call AJAX for task info updating
+        if (isOn)
+            $(".update_form").on('submit', updateTask);
+        else
+            $(".update_form").off('submit', updateTask);
+    };
+
+
+    function onSubmitCreateForm(isOn) {
         // Call AJAX for creating a task
-        $(".create_form").submit(function(e) {
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-            if(!e.isDefaultPrevented()){
-                e.returnValue = false;
-            }
-            var form = $(this);
-            var url = "{% url 'add_task' group.id %}";  // URL
-            $.ajax({
-                method: 'post',
-                data: $(this).serialize(),
-                url: url,
-                success: function(response) {
-                    insertTask(eval(response['new_task'])[0]);
-                }
-            });
-        });
+        if (isOn)
+            $(".create_form").on('submit', createTask);
+        else
+            $(".create_form").off('submit', createTask);
     };
 
     $(document).ready(function () {
 
-        onSubmitCreateForm();
+        onSubmitCreateForm(true);
 
         // When you double-click on the task element, display information about the task
         $('.task_block').on('dblclick', function() {
@@ -165,10 +180,8 @@
             // on success
             success: function (response) {
                 if (response.is_successful == true) {
-                    // console.log(response.task);
-                        console.log(eval(response['task'])[0]);
-                        changeTaskFormType('update');
-                        fillInTaskForm(eval(response['task'])[0]);
+                    changeTaskFormType('update');
+                    fillInTaskForm(eval(response['task'])[0]);
                 }
                 /*else {
                     // todo: show message about failure

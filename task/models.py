@@ -51,8 +51,8 @@ class Task(models.Model):
     )
 
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=300, null=True)
-    deadline = models.DateTimeField(null=True)
+    description = models.CharField(max_length=300, null=True, blank=True)
+    deadline = models.DateTimeField(null=True, blank=True)
     notification = models.CharField(max_length=7, choices=NOTIFICATION_TYPES, default='no')
     priority = models.CharField(max_length=6, choices=PRIORITIES, default='no')
     is_favorite = models.BooleanField(default=False)

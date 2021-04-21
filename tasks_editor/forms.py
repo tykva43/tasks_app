@@ -6,11 +6,6 @@ from django.forms import Textarea
 from task.models import Task, Group, TaskList
 
 
-#class TaskForm(forms.Form):
-    #title = forms.CharField(max_length=100, help_text='100 characters max.')
-    #content = forms.CharField(max_length=500, help_text='500 characters max.')
-    #task_group = forms.ChoiceField()
-
 class TaskForm(forms.ModelForm):
 
     def __init__(self, user, group, *args, **kwargs):
@@ -25,12 +20,6 @@ class TaskForm(forms.ModelForm):
         widgets = {
             'description': Textarea(attrs={'rows': 6, 'cols': 18}),
         }
-
-
-#class TaskForm(forms.Form):
-#    title = forms.CharField(max_length=100)
-#    content = forms.CharField(widget=forms.Textarea)
-#    user = forms.IntegerField()
 
 
 class GroupForm(forms.ModelForm):

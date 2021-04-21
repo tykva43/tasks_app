@@ -100,7 +100,6 @@ html {
 .expander {
     width: 25px;
     height: 25px;
-    border-radius: 20%;
     margin: auto;
     cursor: pointer;
     display: inline-flex;
@@ -108,7 +107,6 @@ html {
     opacity: 0.5;
 }
 .expander:hover {
-    background-color: rgb(230, 230, 230);
     opacity: 1;
 }
 .expander .triangle {
@@ -444,7 +442,19 @@ body::-webkit-scrollbar-thumb {
     border-radius: 20px;
 }
 body::-webkit-scrollbar-track {
-    background-color: #8c4566;
+    background-color: #e2c6d3;
+}
+
+textarea::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+textarea::-webkit-scrollbar-thumb {
+    background-color: #480323;
+    border-radius: 20px;
+}
+textarea::-webkit-scrollbar-track {
+    background-color: #e2c6d3;
 }
 .fa-ellipsis-h {
     right: 10px;
@@ -513,21 +523,34 @@ body::-webkit-scrollbar-track {
 .form_as_table table tbody tr th {
     text-align: -webkit-left;
 }
-.form_as_table p {
+/*.form_as_table p {
     justify-content: space-between;
     display: flex;
-}
-.form_as_table p label {
-    height: max-content;
+}*/
+.form_as_table table tbody tr th label {
+    /*height: max-content;
     margin-top: auto;
     margin-bottom: auto;
-    padding: 3px;
+    padding: 3px;*/
+    font-weight: normal;
 }
 textarea {
     min-width: 150px;
     max-width: 373px;
     max-height: 100px;
+    width: 177px;
 }
 .create_task_btn {
     cursor: pointer;
 }
+input:invalid {
+  background-color: #ffc8cd;
+}
+
+/*input:valid, textarea:valid {
+  background-color: #0fff83;
+}*/
+input {
+    border-style: solid;
+    border-width: thin;
+    }

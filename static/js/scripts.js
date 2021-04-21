@@ -1,8 +1,9 @@
-var is_menu_opened = 0;
+var isMenuOpened = 0;
 var MEDIUM_LVL = '#ffd700',
     LOW_LVL = '#cc0000',
     HIGH_LVL = '#7cfc00'
-
+var taskInfo;
+var isCreating = false;
 
     function div(val, by) {
         return (val - val % by) / by;
@@ -104,22 +105,30 @@ var MEDIUM_LVL = '#ffd700',
     function changeTaskFormType(type) {
         switch (type) {
             case "update":
+                if (isCreating) {
+                    onSubmitUpdateForm(true);
+                    onSubmitCreateForm(false);
+                    isCreating = !isCreating;
+                }
                 $('.task_form').find('h2').text('Task Info');
                 $('.task_form').find('form').toggleClass('create_form', false).toggleClass('update_form', true);
                 $('.task_form').find('.create_task').text('Update');
-                onSubmitUpdateForm();
                 $('.task_form').find('label').css({ 'color': 'white'});
                 $('.task_form').css({'background-color': 'rgb(110, 3, 35)'});
                 $('.task_form').children('h2').css({'color': 'white'});
                 break;
             case "create":
+                if (!isCreating) {
+                    onSubmitUpdateForm(false);
+                    onSubmitCreateForm(true);
+                    isCreating = !isCreating;
+                }
                 $('.task_form').find('h2').text('Task creating');
                 $('.task_form').find('form').toggleClass('create_form', true).toggleClass('update_form', false);
                 $('.task_form').find('.create_task').text('Create');
                 $('.task_form').css({'background-color': '#dfdfdf', 'color': '#480323'});
                 $('.task_form').find('label').css({'color': '#480323'});
                 $('.task_form').children('h2').css({'color': '#480323'});
-                onSubmitCreateForm();
                 cleanTaskFormFields();
         }
     };
@@ -137,15 +146,16 @@ var MEDIUM_LVL = '#ffd700',
     }
 
     // Fill in task form with input task
-    function fillInTaskForm(task_info) {
+    function fillInTaskForm(task) {
+        taskInfo = task;
         var form = $('.task_form').children('form');
-        form.find('#id_title').val(task_info.fields.title);
-        form.find('#id_description').text(task_info.fields.description);
-        form.find('#id_deadline').val(task_info.fields.deadline);
-        form.find('#id_notification').val(task_info.fields.notification);
-        form.find('#id_priority').val(task_info.fields.priority);
-        form.find('#id_is_favorite').prop("checked", task_info.fields.is_favorite) ;
-        form.find('#id_tasklist').val(task_info.fields.tasklist);
+        form.find('#id_title').val(taskInfo.fields.title);
+        form.find('#id_description').text(taskInfo.fields.description);
+        form.find('#id_deadline').val(taskInfo.fields.deadline);
+        form.find('#id_notification').val(taskInfo.fields.notification);
+        form.find('#id_priority').val(taskInfo.fields.priority);
+        form.find('#id_is_favorite').prop("checked", taskInfo.fields.is_favorite) ;
+        form.find('#id_tasklist').val(taskInfo.fields.tasklist);
     };
 
     // Update the readiness value for all tasklists in the document
@@ -231,7 +241,7 @@ function changeContentWidth() {
 
     var left_min_menu_width = $('.left_min_menu').width();
     var content_outer_width = $('.content').innerWidth() - $('.content').width();
-    var left_menu_width = is_menu_opened * $('.left_menu').width();
+    var left_menu_width = isMenuOpened * $('.left_menu').width();
     var content_left_margin = left_menu_width;
 
     $(".content").css("width", ( $(window).width() - content_outer_width - left_menu_width - left_min_menu_width).toString()+ "px");
@@ -248,13 +258,13 @@ function menuItemClicked() {
 
     if ($('.left_menu').css('margin-left') == $('.left_min_menu').width().toString() + "px") { // если левое меню выдвинуто
         // задвинуть левое меню
-        is_menu_opened = 0;
+        isMenuOpened = 0;
         $('.left_menu').css('margin-left', (-left_menu_width).toString() + 'px');
         changeContentWidth();
     }
     else {
         // вытащить левое меню
-        is_menu_opened = 1;
+        isMenuOpened = 1;
         $('.left_menu').css('margin-left', left_min_menu_width.toString() + "px");
         changeContentWidth();
         }
