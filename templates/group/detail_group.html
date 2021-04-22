@@ -47,19 +47,24 @@
                                     <div class="expander task_expander rotated">
                                         <i class="fas fa-angle-down"></i>
                                     </div>
-                                    <div class="list_elem task_block pointer flex_div">
-                                        {% if task.is_completed %}
-                                            <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                        {% else %}
-                                            <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
-                                        {% endif %}
-                                        {{ task.title }}
+                                    <div class="list_elem_wrapper">
+                                        <div class="list_elem task_block pointer flex_div">
+                                            {% if task.is_completed %}
+                                                <i class="fa fa-check-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
+                                            {% endif %}
+                                            {{ task.title }}
+                                        </div>
+                                        <div class="list_elem_controls">
+                                            {% if task.is_favorite %}
+                                                <i class="fas fa-star" id="f{{task.id}}"></i>
+                                            {% else %}
+                                                <i class="far fa-star" id="f{{task.id}}"></i>
+                                            {% endif %}
+                                            <i class="far fa-trash-alt" id="d{{task.id}}"></i>
+                                        </div>
                                     </div>
-                                    {% if task.is_favorite %}
-                                        <i class="fas fa-star" id="f{{task.id}}"></i>
-                                    {% else %}
-                                        <i class="far fa-star" id="f{{task.id}}"></i>
-                                    {% endif %}
                                 </div>
                                 <!-- Subtask list -->
                                 <div class="subtask_block drop_down_list invisible">
@@ -108,26 +113,23 @@
 {% block javascript %}
 
     function updateTask(e) {
-                e.preventDefault(); // avoid to execute the actual submit of the form.
-                if(!e.isDefaultPrevented()){
-                    e.returnValue = false;
-                }
-                var form = $(this);
-                var url = "{% url 'update_task' %}";  // URL
-                console.log($(this).serialize());
-                $.ajax({
-
-                    method: 'post',
-                    data: $(this).serialize(),
-                    url: url,
-                    success: function(response)
-                    {
-                        if (response.is_successful) {
-                            console.log('UPDATED');
-                            // insertTask(eval(response['new_task'])[0]);
-                        }
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        if(!e.isDefaultPrevented()) {
+            e.returnValue = false;
+            }
+            var form = $(this);
+            var url = "{% url 'update_task' %}";  // URL
+            $.ajax({
+                method: 'post',
+                data: $(this).serialize(),
+                url: url,
+                success: function(response)
+                {
+                    if (response.is_successful) {
+                        console.log('UPDATED');
                     }
-                });
+                }
+            });
     };
 
     function createTask(e) {
@@ -141,8 +143,10 @@
             url: "{% url 'add_task' group.id %}",
             success: function(response) {
                 if (response.is_successful) {
-                    insertTask(eval(response['new_task'])[0]);
-                    updateAllTasklistsReadiness();
+                    var new_task = eval(response['new_task'])[0];
+                    insertTask(new_task);
+                    var tasklist = $('#t'+new_task.pk).parents('.expander_wrapper');
+                    updateTasklistReadiness(tasklist);
                 }
             }
         });
@@ -165,9 +169,34 @@
             $(".create_form").off('submit', createTask);
     };
 
+    function deleteTask() {
+        var isSure = confirm("Are you sure you want to delete the task?");
+
+        if (isSure) {
+            var task_pk = $(this).attr('id').substr(1);
+            var url = "{% url 'delete_task' %}";  // URL
+
+            $.ajax({
+                method: 'post',
+                data: { csrfmiddlewaretoken: getCookie('csrftoken'), task_pk: task_pk },
+                url: url,
+                success: function(response)
+                {
+                    if (response.is_successful) {
+                        $('#t'+task_pk).parents('.expander_wrapper').eq(0).remove();    // Remove task element
+                        var tasklist = $('#t'+task_pk).parents('.expander_wrapper');
+                        updateTasklistReadiness(tasklist);
+                    }
+                }
+            });
+        }
+    };
+
     $(document).ready(function () {
 
         onSubmitCreateForm(true);
+
+        $('.fa-trash-alt').on('click', deleteTask);
 
         // When you double-click on the task element, display information about the task
         $('.task_block').on('dblclick', function() {

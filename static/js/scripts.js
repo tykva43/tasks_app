@@ -34,7 +34,7 @@ var isCreating = false;
         else if (readinessInPercents <= 75)
             color = MEDIUM_LVL;
             else
-            color = HIGH_LVL;
+                color = HIGH_LVL;
         obj.children('.ready').css({'width': readinessInPercents.toString() + '%', 'background-color': color});
     }
 
@@ -49,16 +49,22 @@ var isCreating = false;
     // Insert new task
     function insertTask(new_task) {
     var is_favorite = new_task.fields.is_favorite? "fas": "far";
+
     var task_block = `<div class=\"expander_wrapper\">
                             <div class=\"task_block_wrapper\">
                                 <div class=\"expander task_expander rotated\">
                                     <i class=\"fas fa-angle-down\"></i>
                                 </div>
-                                <div class=\"list_elem task_block pointer flex_div\">
-                                    <i class=\"fa fa-square-o task_marker\" id=\"t${new_task.pk}\" aria-hidden=\"true\"></i>
-                                    ${new_task.fields.title}
+                                <div class=\"list_elem_wrapper\">
+                                    <div class=\"list_elem task_block pointer flex_div\">
+                                        <i class=\"fa fa-square-o task_marker\" id=\"t${new_task.pk}\" aria-hidden=\"true\"></i>
+                                        ${new_task.fields.title}
+                                    </div>
+                                    <div class=\"list_elem_controls\">
+                                        <i class=\"${is_favorite} fa-star\" id=\"f${new_task.pk}\"></i>
+                                        <i class=\"far fa-trash-alt\" id=\"d${new_task.pk}\"></i>
+                                    </div>
                                 </div>
-                                <i class=\"${is_favorite} fa-star\" id=\"f${new_task.pk}\"></i>
                             </div>
                             <div class=\"subtask_block drop_down_list invisible\">
                                 <div class=\"description\">There are no subtasks yet
@@ -70,6 +76,7 @@ var isCreating = false;
         $(tasklist_id).children('.description').remove();    // Remove the description that there are no tasks in this task list
         $(tasklist_id).append(task_block);                   // Append task block in html
         $(tasklist_id).find('.expander').click(onExpanderClicked);
+        $(tasklist_id).find(`#d${new_task.pk}`).on('click', deleteTask);
     };
 
     // Update is_favorite field
@@ -158,22 +165,25 @@ var isCreating = false;
         form.find('#id_tasklist').val(taskInfo.fields.tasklist);
     };
 
+    // Update the readiness value or a certain tasklist
+    function updateTasklistReadiness(tasklist) {
+        var tasks = tasklist.find('.tasklist_block').children('.expander_wrapper');
+        // If there are no tasks, assign a value of 1 to avoid division by 0
+        var tasksCount = tasks.length? tasks.length : 1;
+        var completedTasksCount = 0;
+        tasks.find('.task_marker').each(function() {
+            completedTasksCount += $(this).hasClass('fa-check-square-o')? 1 : 0;
+        });
+        updateReadiness(tasklist.find('.readiness'), completedTasksCount/tasksCount);
+    }
+
     // Update the readiness value for all tasklists in the document
     function updateAllTasklistsReadiness() {
         var tasklists = $('#tasklists').children('.expander_wrapper');
         tasklists.each(function() {
-            var tasks = $(this).find('.tasklist_block').children('.expander_wrapper');
-            // If there are no tasks, assign a value of 1 to avoid division by 0
-            var tasksCount = tasks.length? tasks.length : 1;
-            var completedTasksCount = 0;
-            tasks.find('.task_marker').each(function() {
-                completedTasksCount += $(this).hasClass('fa-check-square-o')? 1 : 0;
-            })
-            updateReadiness($(this).find('.readiness'), completedTasksCount/tasksCount);
+            updateTasklistReadiness($(this));
         });
     }
-
-
 
 $(document).ready(function() {
 

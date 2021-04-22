@@ -155,7 +155,12 @@ def get_task_info(request, group_pk, task_pk):
 
 def delete_task(request):
     """Delete a task by task_pk"""
-    ...
+    task_pk = request.POST.get("task_pk")
+    user_id = request.user.id
+    is_successful = False
+    if Task.objects.filter(id=task_pk, group__users__id=user_id).delete()[0]:
+        is_successful = True
+    return JsonResponse({'is_successful': is_successful})
 
 
 def update_task(request):

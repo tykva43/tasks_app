@@ -411,7 +411,7 @@ a.link img {
     cursor: pointer;
 }
 .task_expander {
-    margin-left: 35px;
+    /*margin-left: 35px;*/
 }
 .subtask_block {
     margin-left: 50px;
@@ -478,7 +478,7 @@ textarea::-webkit-scrollbar-track {
 .task_form h2 {
     color: #480323;
 }
-.fa-star {
+.fa-star, .fa-trash-alt {
     cursor: pointer;
     font-size: 20px;
     margin-left: 10px;
@@ -553,4 +553,23 @@ input:invalid {
 input {
     border-style: solid;
     border-width: thin;
-    }
+}
+.list_elem_wrapper {
+    position: relative;
+}
+.list_elem_controls {
+
+    width: max-content;
+    right: 0px;
+    position: absolute;
+    top: 0px;
+}
+.task_block_wrapper {
+    display: grid;
+    grid-template-columns: 10% 90%;
+    margin: auto 10px;
+}
+.button {
+    display: block;
+    margin: 20px auto;
+}

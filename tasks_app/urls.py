@@ -58,6 +58,7 @@ urlpatterns = [
     path('task/update/status/', ajax.update_task_status, name='update_task_status'),
     path('group/<int:group_pk>/task/add/', ajax.add_task, name='add_task'),
     path('task/update/', ajax.update_task, name='update_task'),
+    path('task/delete/', ajax.delete_task, name='delete_task'),
     path('group/<int:group_pk>/task/<int:task_pk>/info/', ajax.get_task_info, name='get_task_info'),
     path('task/update/favorite/', ajax.update_favorite_status, name='update_favorite_status'),
 
