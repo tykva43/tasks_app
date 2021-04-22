@@ -4,6 +4,8 @@ var MEDIUM_LVL = '#ffd700',
     HIGH_LVL = '#7cfc00'
 var taskInfo;
 var isCreating = false;
+var isTasklistTitleChanged = false;
+var tasklistChangedFields = {};
 
     function div(val, by) {
         return (val - val % by) / by;
@@ -77,6 +79,8 @@ var isCreating = false;
         $(tasklist_id).append(task_block);                   // Append task block in html
         $(tasklist_id).find('.expander').click(onExpanderClicked);
         $(tasklist_id).find(`#d${new_task.pk}`).on('click', deleteTask);
+        $(`#t${new_task.pk}`).parent('.task_block').on('dblclick', getTaskInfo);   // Connect signal for getting additional info about task
+        $(`#t${new_task.pk}`).on('click', taskMarkerChecked);
     };
 
     // Update is_favorite field
@@ -185,16 +189,77 @@ var isCreating = false;
         });
     }
 
+    function isEditingReady() {
+
+        if (!$(event.target).hasClass('is-active')) {
+            if (Object.keys(tasklistChangedFields).length) {  // If there are changes in tasklist title
+
+                var tasklist_title = $('.is-active');
+                var id = tasklist_title.parents('.expander_wrapper').eq(0).find('.tasklist_block').attr('id').substr(1);
+                tasklist_title.attr('contenteditable', false);
+                tasklist_title.toggleClass('is-active', false);
+
+                // Send request for title updating
+                $.post(
+                    "tasklist/" + id + '/',         // URL update_tasklist
+                    {
+                        json_data: JSON.stringify({values: /*tasklistChangedFields*/{'title': tasklist_title.text()}}),
+                        "csrfmiddlewaretoken": getCookie('csrftoken'),
+                    },
+                    function(response) {
+                        if (response.is_successful == false) {
+                            // todo: show message about failure
+                        }
+                        $(document).off('click', isEditingReady);
+                    },
+                    'json'
+                );
+            }
+        }
+    }
+
 $(document).ready(function() {
 
     changeContentWidth();
 
+    onSubmitCreateForm(true);
+
     updateAllTasklistsReadiness();
+
+    $('.task_block').on('dblclick', getTaskInfo);
+    $('.task_marker').on('click', taskMarkerChecked);
+
+    $('.fa-trash-alt').on('click', deleteTask);
+
+    $('.tasklist_title').on('input', function () {
+        isTasklistTitleChanged = true;
+        tasklistChangedFields['title'] = $(this).text();
+    })
+
+    $('.tasklist_title').on('dblclick', function() {
+        isTasklistTitleChanged = false;
+        tasklistChangedFields = {};
+        $(this).attr('contenteditable', true);
+        $(this).toggleClass('is-active', true);
+        $(document).on('click', isEditingReady);
+    });
+
+    $('.fa-ellipsis-h').on('click', function() {
+        alert('Someday there will be any action here');
+    })     // todo: display tasklist menu
 
     $('.create_task_btn').on('click', function() {
         changeTaskFormType('create');
     });
 
+    $(window).scroll(function() {
+        if ($(this).scrollTop()>=$(window).height())
+            $('.up_btn').fadeIn("slow");
+        else
+            $('.up_btn').fadeOut("slow");
+    });
+
+    // Auto vertical centering for task form
     $(window).scroll(function() {
         var scrollTop = $(this).scrollTop();
         var taskFormHeight = $('.task_form').outerHeight();
@@ -222,29 +287,13 @@ $(document).ready(function() {
 
     $(window).on( "resize", changeContentWidth);
 
-   /* $("[data-tooltip]").mousemove(function(event) {
-        $data_tooltip = $(this).attr("data-tooltip");
-        if ($(".left_min_menu").is(':hidden')) {
-             $(".tooltip").text($data_tooltip)
-            .css({"top": event.pageY + 5,
-                  "left": event.pageX + 5})
-            .show();
-        }
-        else {
-            $(".tooltip").text($data_tooltip)
-            .css({"top": event.pageY + 5,
-                  "left": event.pageX - 75 })
-            .show();
-        }
-
-    }).mouseout(function() {
-        $(".tooltip").hide()
-                     .text("")
-                     .css({
-                        "top": 0,
-                        "left": 0
-                     });
-    });*/
+    // Smooth scrolling when navigating
+    $('a[href^="#"], *[data-href^="#"]').on('click', function(e){
+        e.preventDefault();
+        var t = 1000;
+        var d = $(this).attr('data-href') ? $(this).attr('data-href') : $(this).attr('href');
+        $('html,body').stop().animate({ scrollTop: $(d).offset().top }, t);
+    });
 });
 
 function changeContentWidth() {

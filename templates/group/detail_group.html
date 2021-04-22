@@ -117,11 +117,12 @@
         if(!e.isDefaultPrevented()) {
             e.returnValue = false;
             }
+        console.log(form.serialize());
             var form = $(this);
             var url = "{% url 'update_task' %}";  // URL
             $.ajax({
                 method: 'post',
-                data: $(this).serialize(),
+                data: form.serialize(),
                 url: url,
                 success: function(response)
                 {
@@ -192,18 +193,12 @@
         }
     };
 
-    $(document).ready(function () {
+    // When you double-click on the task element, display information about the task
+    function getTaskInfo() {
+        var id = $(this).find('.task_marker').attr('id').substr(1);
 
-        onSubmitCreateForm(true);
-
-        $('.fa-trash-alt').on('click', deleteTask);
-
-        // When you double-click on the task element, display information about the task
-        $('.task_block').on('dblclick', function() {
-            var id = $(this).find('.task_marker').attr('id').substr(1);
-
-            // create an AJAX call
-            $.ajax({
+        // create an AJAX call
+        $.ajax({
             url: "task/" + id + "/info/",         // URL
             type: "GET",
             // on success
@@ -215,41 +210,40 @@
                 /*else {
                     // todo: show message about failure
                 }*/
-                }
-            });
+            }
         });
+    };
+
+    function taskMarkerChecked() {
+        // create an AJAX call
+        var task_marker = $(this);
+        var id = $(this).attr('id').substr(1); // get the task id value
+        var status = !$(this).hasClass('fa-check-square-o');
+        $.ajax({
+            data: {status: status, csrfmiddlewaretoken: getCookie('csrftoken')},
+            url: "{% url 'update_task_status' %}?task_pk=" + id,         // URL
+            type: "POST",
+            // on success
+            success: function(response) {
+                if (response.is_successful == true) {
+                    taskMarkerClicked(task_marker);
+                    var readyElemId = '#r' + task_marker.parents('.tasklist_block').eq(0).attr('id').substr(1);
+                    updateReadiness($(readyElemId), response.readiness);
+                }
+                else {
+                    // todo: show message about failure
+                }
+            }
+        });
+    };
+
+    $(document).ready(function () {
 
             // Change is_favorite status
             $('.fa-star').on('click', function() {
                 var id = $(this).attr('id').substr(1); // get the task id value
                 var url = "{% url 'update_favorite_status' %}?task_pk=" + id;
                 updateFavoriteStatus($(this), url);
-            });
-
-
-
-            // If the user checks or unchecks the task completion marker
-            $('.task_marker').on('click', function () {
-                // create an AJAX call
-                var task_marker = $(this);
-                var id = $(this).attr('id').substr(1); // get the task id value
-                var status = !$(this).hasClass('fa-check-square-o');
-                $.ajax({
-                    data: {status: status, csrfmiddlewaretoken: getCookie('csrftoken')},
-                    url: "{% url 'update_task_status' %}?task_pk=" + id,         // URL
-                    type: "POST",
-                    // on success
-                    success: function(response) {
-                        if (response.is_successful == true) {
-                            taskMarkerClicked(task_marker);
-                            var readyElemId = '#r' + task_marker.parents('.tasklist_block').eq(0).attr('id').substr(1);
-                            updateReadiness($(readyElemId), response.readiness);
-                        }
-                        else {
-                            // todo: show message about failure
-                        }
-                    }
-                });
             });
 
             // If the user checks or unchecks the subtask completion marker

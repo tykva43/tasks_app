@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import PasswordResetView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.core import serializers
 
 from task.models import Group, TaskList, User
 from .forms import RegistrationForm, GroupForm, TaskListForm, TaskForm
@@ -77,12 +78,12 @@ class RegistrationView(UserPassesTestMixin, CreateView):
         return valid
 
 
-
-
-
 @login_required
 def user_profile(request):
-    ...
+    # todo: use user_profile template
+    user = get_object_or_404(User, id=request.user.id)
+    return JsonResponse({'user': serializers.serialize('json', [user], fields=('username', 'first_name', 'last_name',
+                                                                               'email'))})
 
 
 # ******** Groups ********
@@ -114,7 +115,7 @@ class DetailGroup(DetailView):
         context['title'] = 'Tasklists'
         group_pk = self.kwargs.get('group_pk')
         context['task_form'] = TaskForm(user=self.request.user.id, group=group_pk)
-        context['tasklists'] = TaskList.objects.filter(group_id=group_pk).prefetch_related('tasks').\
+        context['tasklists'] = TaskList.objects.filter(group_id=group_pk).prefetch_related('tasks'). \
             prefetch_related('tasks__subtasks')
         return context
 
@@ -145,7 +146,7 @@ class GroupView(ListView):
         return context
 
     def get_queryset(self):
-        return Group.objects.filter(users=self.request.user.id)  #!!! Обращение к модели
+        return Group.objects.filter(users=self.request.user.id)  # !!! Обращение к модели
 
 
 # ********* Password Reset *********
@@ -186,7 +187,7 @@ class CreateTaskList(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        group = Group.objects.get(id=self.kwargs['group_pk'])           #!!! Обращение к модели
+        group = Group.objects.get(id=self.kwargs['group_pk'])  # !!! Обращение к модели
         form.instance.group = group
         self.object.save()
         return super(CreateTaskList, self).form_valid(form)

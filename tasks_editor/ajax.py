@@ -4,6 +4,7 @@ from django.core.validators import validate_email as django_email_validator
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils import timezone
 from django.core import serializers
+import json
 
 from task.models import User, Task, Subtask, TaskList
 from tasks_editor.forms import TaskForm
@@ -126,6 +127,7 @@ def update_subtask_status(request):
         return JsonResponse({'is_successful': is_successful, 'is_task_toggled': is_task_toggled})
 
 
+@login_required
 def add_task(request, group_pk):
     """Create new task"""
     is_successful = False
@@ -146,6 +148,7 @@ def add_task(request, group_pk):
     return JsonResponse({'is_successful': is_successful})
 
 
+@login_required
 def get_task_info(request, group_pk, task_pk):
     """Send task info by task_pk from url params"""
     user_id = request.user.id
@@ -153,6 +156,7 @@ def get_task_info(request, group_pk, task_pk):
     return JsonResponse({'is_successful': True, 'task': serializers.serialize('json', [task])})
 
 
+@login_required
 def delete_task(request):
     """Delete a task by task_pk"""
     task_pk = request.POST.get("task_pk")
@@ -163,11 +167,25 @@ def delete_task(request):
     return JsonResponse({'is_successful': is_successful})
 
 
+@login_required
 def update_task(request):
-    """"""
-    ...
+    """Update task fields"""
+    is_successful = False
+    message = ''
+    # Get updating field list from request
+    if request.method == 'POST':
+        user_id = request.user.id
+        task_pk = request.POST['task_pk']
+        data = json.loads(request.POST['json_data'])
+        values = data['values']
+        if Task.objects.filter(id=task_pk, group__users__id=user_id).update(**values) > 0:
+            is_successful = True
+        else:
+            message = 'Data update error occurred'
+    return JsonResponse({'is_successful': is_successful, 'message': message})
 
 
+@login_required
 def update_favorite_status(request):
     """Change the is_favorite status to the opposite"""
     task_pk = request.GET.get("task_pk")
@@ -181,3 +199,19 @@ def update_favorite_status(request):
         task.is_favorite = not task.is_favorite
         task.save(update_fields=["is_favorite"])
     return JsonResponse({'is_successful': is_successful})
+
+
+@login_required
+def update_tasklist(request, group_pk, tasklist_pk):
+    """Update tasklist fields"""
+    is_successful = False
+    message = ''
+    # Get updating field list from request
+    if request.method == 'POST':
+        data = json.loads(request.POST['json_data'])
+        values = data['values']
+        if TaskList.objects.filter(id=tasklist_pk).update(**values)>0:
+            is_successful = True
+        else:
+            message = 'Data update error occurred'
+    return JsonResponse({'is_successful': is_successful, 'message': message})

@@ -573,3 +573,21 @@ input {
     display: block;
     margin: 20px auto;
 }
+.up_btn {
+    position: fixed;
+    z-index: 10;
+    color: #480323;
+    bottom: 0px;
+    right: 0px;
+    cursor: pointer;
+}
+.fa-chevron-circle-up {
+    font-size: 40px;
+}
+.tasklist_title[contenteditable="true"] {
+    background-color: #d04284;
+    height: max-content;
+    padding: 5px;
+    border-radius: 5px;
+    border-style: ridge;
+}
