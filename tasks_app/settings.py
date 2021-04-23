@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +22,13 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g_zsed!@*@cs$&_vm31ige+w571(0lp9yskupcnwr8&cf_cxn-'
+# SECRET_KEY = 'g_zsed!@*@cs$&_vm31ige+w571(0lp9yskupcnwr8&cf_cxn-'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '_72rs+j1a7!u*c)c5)-ux5i*5%^p8feujpbpotd9xz_#+_p&9')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -93,6 +95,10 @@ DATABASES = {
     }
 }
 
+# Heroku: Update database configuration from $DATABASE_URL.
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
 LOGIN_URL = '/login/'
 
 LOGIN_REDIRECT_URL = '/groups/'
@@ -141,6 +147,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+WHITENOISE_USE_FINDERS = True
