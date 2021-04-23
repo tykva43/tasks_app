@@ -7,6 +7,7 @@ var isCreating = false;
 var isTasklistTitleChanged = false;
 var tasklistChangedFields = {};
 
+
     function div(val, by) {
         return (val - val % by) / by;
     }
@@ -50,37 +51,36 @@ var tasklistChangedFields = {};
 
     // Insert new task
     function insertTask(new_task) {
-    var is_favorite = new_task.fields.is_favorite? "fas": "far";
+        var is_favorite = new_task.fields.is_favorite? "fas": "far";
+        var subtask_block = $('<div class="subtask_block drop_down_list invisible">')
+            .append($('<div class="description">').text('There are no subtasks yet'));
+        var expander = $('<div class="expander task_expander rotated">')
+                .append($('<i class="fas fa-angle-down">')).on('click', onExpanderClicked);
+        var list_elem_wrapper = $('<div class="list_elem_wrapper">')
+            .append(
+                $('<div class="list_elem task_block pointer flex_div">')
+                    .append(
+                        $('<i class="fa fa-square-o task_marker" aria-hidden="true">').attr('id', `t${new_task.pk}`)
+                            .on('click', taskMarkerChecked),
+                        document.createTextNode(' ' + new_task.fields.title)
+                    ).on('dblclick', getTaskInfo),
+                $('<div class="list_elem_controls">')
+                    .append(
+                        $('<i class="fa-star">').addClass(is_favorite).attr('id', `f${new_task.pk}`)
+                            .on('click', onFavoriteClicked),
+                        $('<i class="far fa-trash-alt">').attr('id', `d${new_task.pk}`).on('click', deleteTask)
+                    )
+                );
+        var task_block = $('<div class="expander_wrapper">')
+            .append(
+                $('<div class="task_block_wrapper">')
+                    .append(expander, list_elem_wrapper),
+                subtask_block
+            )
+        var tasklist_id = `#l{new_task.fields.tasklist}`;
 
-    var task_block = `<div class=\"expander_wrapper\">
-                            <div class=\"task_block_wrapper\">
-                                <div class=\"expander task_expander rotated\">
-                                    <i class=\"fas fa-angle-down\"></i>
-                                </div>
-                                <div class=\"list_elem_wrapper\">
-                                    <div class=\"list_elem task_block pointer flex_div\">
-                                        <i class=\"fa fa-square-o task_marker\" id=\"t${new_task.pk}\" aria-hidden=\"true\"></i>
-                                        ${new_task.fields.title}
-                                    </div>
-                                    <div class=\"list_elem_controls\">
-                                        <i class=\"${is_favorite} fa-star\" id=\"f${new_task.pk}\"></i>
-                                        <i class=\"far fa-trash-alt\" id=\"d${new_task.pk}\"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class=\"subtask_block drop_down_list invisible\">
-                                <div class=\"description\">There are no subtasks yet
-                                </div>
-                            </div>
-                       </div>`;
-
-        var tasklist_id = "#l" + new_task.fields.tasklist;
         $(tasklist_id).children('.description').remove();    // Remove the description that there are no tasks in this task list
         $(tasklist_id).append(task_block);                   // Append task block in html
-        $(tasklist_id).find('.expander').click(onExpanderClicked);
-        $(tasklist_id).find(`#d${new_task.pk}`).on('click', deleteTask);
-        $(`#t${new_task.pk}`).parent('.task_block').on('dblclick', getTaskInfo);   // Connect signal for getting additional info about task
-        $(`#t${new_task.pk}`).on('click', taskMarkerChecked);
     };
 
     // Update is_favorite field

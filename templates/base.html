@@ -21,12 +21,22 @@
        }
     </style>
     <script>
+        // Show loader animation while page is loading
+        $(window).on('load', function () {
+            var $preloader = $('#preloader'),
+                $svg_anm   = $preloader.find('.svg_anm');
+            $svg_anm.fadeOut();
+            $preloader.delay(500).fadeOut('slow');
+        });
         {% block javascript %}{% endblock javascript %}
     </script>
     <link rel="shortcut icon" href="{% static "imgs/shortcut.png" %}" type="image/png">
 </head>
 
 <body>
+    <div id="preloader">
+        <span class="svg_anm"></span>
+    </div>
     <div class="left_min_menu">
         <div class="menu_item_container" id="flip_toggle">
             <div class="menu_item">

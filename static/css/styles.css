@@ -528,10 +528,6 @@ textarea::-webkit-scrollbar-track {
     display: flex;
 }*/
 .form_as_table table tbody tr th label {
-    /*height: max-content;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 3px;*/
     font-weight: normal;
 }
 textarea {
@@ -558,11 +554,16 @@ input {
     position: relative;
 }
 .list_elem_controls {
-
     width: max-content;
     right: 0px;
     position: absolute;
     top: 0px;
+    grid-template-columns: 50% 50%;
+    display: grid;
+    height: 100%;
+}
+.list_elem_controls .far, .list_elem_controls .fas {
+    margin: auto 5px
 }
 .task_block_wrapper {
     display: grid;
@@ -590,4 +591,22 @@ input {
     padding: 5px;
     border-radius: 5px;
     border-style: ridge;
+}
+#preloader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right:0;
+    bottom:0;
+    background: white;
+    z-index: 30;
+}
+#preloader .svg_anm {
+    position: absolute;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    background: url(/static/imgs/loader.svg) center center no-repeat;
+    background-size: 80px;
+    margin: auto;
+    display: block;
 }

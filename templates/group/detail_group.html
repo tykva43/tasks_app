@@ -237,14 +237,16 @@
         });
     };
 
+    function onFavoriteClicked() {
+        var id = $(this).attr('id').substr(1); // get the task id value
+        var url = "{% url 'update_favorite_status' %}?task_pk=" + id;
+        updateFavoriteStatus($(this), url);
+    }
+
     $(document).ready(function () {
 
             // Change is_favorite status
-            $('.fa-star').on('click', function() {
-                var id = $(this).attr('id').substr(1); // get the task id value
-                var url = "{% url 'update_favorite_status' %}?task_pk=" + id;
-                updateFavoriteStatus($(this), url);
-            });
+            $('.fa-star').on('click', onFavoriteClicked);
 
             // If the user checks or unchecks the subtask completion marker
             $('.subtask_marker').on('click', function () {
