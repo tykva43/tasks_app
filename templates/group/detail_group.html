@@ -54,7 +54,7 @@
                                             {% else %}
                                                 <i class="fa fa-square-o task_marker" id="t{{task.id}}" aria-hidden="true"></i>
                                             {% endif %}
-                                            {{ task.title }}
+                                            <span>{{ task.title }}</span>
                                         </div>
                                         <div class="list_elem_controls">
                                             {% if task.is_favorite %}
@@ -75,7 +75,7 @@
                                             {% else %}
                                                 <i class="fa fa-square-o subtask_marker" id="s{{subtask.id}}" aria-hidden="true"></i>
                                             {% endif %}
-                                            {{ subtask.title }}
+                                            <span>{{ subtask.title }}</span>
                                         </div>
                                     {% empty %}
                                         <div class="description">There are no subtasks yet</div>
@@ -112,25 +112,46 @@
 {% endblock content %}
 {% block javascript %}
 
+    <script type="text/javascript" src="{% static "js/detail_group.js" %}"> </script>
+    <script>
+
+    function updateTaskField(fields) {
+        var task = $('.active_task').find('.task_block');
+        if(!!fields['title'])
+            $('.active_task').find('.task_block').find('span').text(' ' + fields['title'])
+        if(fields.hasOwnProperty('is_favorite')) {
+            var star = $('#f' + selectedTaskId.toString());
+            star.toggleClass('far', !fields['is_favorite']);
+            star.toggleClass('fas', fields['is_favorite']);
+        }
+    }
+
     function updateTask(e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         if(!e.isDefaultPrevented()) {
             e.returnValue = false;
+        }
+
+        if (Object.keys(taskChangedFields).length) {  // If there are changes in task fields
+            // Send request for task updating
+            $.post(
+                "{% url 'update_task' %}",         // URL update_tasklist
+                    {
+                        'task_pk': selectedTaskId,
+                        json_data: JSON.stringify({values: taskChangedFields}),
+                        "csrfmiddlewaretoken": getCookie('csrftoken'),
+                    },
+                    function(response) {
+                        if (response.is_successful == true) {
+                            updateTaskField(taskChangedFields);
+                            taskChangedFields = {};
+                            // todo: update on view
+                        }
+                            // todo: show message about failure
+                    },
+                    'json'
+                );
             }
-        console.log(form.serialize());
-            var form = $(this);
-            var url = "{% url 'update_task' %}";  // URL
-            $.ajax({
-                method: 'post',
-                data: form.serialize(),
-                url: url,
-                success: function(response)
-                {
-                    if (response.is_successful) {
-                        console.log('UPDATED');
-                    }
-                }
-            });
     };
 
     function createTask(e) {
@@ -153,23 +174,6 @@
         });
     };
 
-    function onSubmitUpdateForm(isOn) {
-        // Call AJAX for task info updating
-        if (isOn)
-            $(".update_form").on('submit', updateTask);
-        else
-            $(".update_form").off('submit', updateTask);
-    };
-
-
-    function onSubmitCreateForm(isOn) {
-        // Call AJAX for creating a task
-        if (isOn)
-            $(".create_form").on('submit', createTask);
-        else
-            $(".create_form").off('submit', createTask);
-    };
-
     function deleteTask() {
         var isSure = confirm("Are you sure you want to delete the task?");
 
@@ -184,8 +188,8 @@
                 success: function(response)
                 {
                     if (response.is_successful) {
-                        $('#t'+task_pk).parents('.expander_wrapper').eq(0).remove();    // Remove task element
                         var tasklist = $('#t'+task_pk).parents('.expander_wrapper');
+                        $('#t'+task_pk).parents('.expander_wrapper').eq(0).remove();    // Remove task element
                         updateTasklistReadiness(tasklist);
                     }
                 }
@@ -195,15 +199,17 @@
 
     // When you double-click on the task element, display information about the task
     function getTaskInfo() {
-        var id = $(this).find('.task_marker').attr('id').substr(1);
+        selectedTaskId = $(this).parent('.task_block').find('.task_marker').attr('id').substr(1);
+        $('.active_task').toggleClass('active_task', false);
+        $(this).parents('.task_block_wrapper').parent('.expander_wrapper').toggleClass('active_task', true);
 
         // create an AJAX call
         $.ajax({
-            url: "task/" + id + "/info/",         // URL
+            url: "task/" + selectedTaskId + "/info/",         // URL
             type: "GET",
             // on success
             success: function (response) {
-                if (response.is_successful == true) {
+                if (response.is_successful) {
                     changeTaskFormType('update');
                     fillInTaskForm(eval(response['task'])[0]);
                 }
@@ -217,18 +223,18 @@
     function taskMarkerChecked() {
         // create an AJAX call
         var task_marker = $(this);
-        var id = $(this).attr('id').substr(1); // get the task id value
+        var task_pk = $(this).attr('id').substr(1); // get the task id value
         var status = !$(this).hasClass('fa-check-square-o');
         $.ajax({
             data: {status: status, csrfmiddlewaretoken: getCookie('csrftoken')},
-            url: "{% url 'update_task_status' %}?task_pk=" + id,         // URL
+            url: "{% url 'update_task_status' %}?task_pk=" + task_pk,         // URL
             type: "POST",
             // on success
             success: function(response) {
                 if (response.is_successful == true) {
                     taskMarkerClicked(task_marker);
-                    var readyElemId = '#r' + task_marker.parents('.tasklist_block').eq(0).attr('id').substr(1);
-                    updateReadiness($(readyElemId), response.readiness);
+                    var tasklist = $('#t'+task_pk).parents('.expander_wrapper');
+                    updateTasklistReadiness(tasklist);
                 }
                 else {
                     // todo: show message about failure
@@ -243,10 +249,7 @@
         updateFavoriteStatus($(this), url);
     }
 
-    $(document).ready(function () {
-
-            // Change is_favorite status
-            $('.fa-star').on('click', onFavoriteClicked);
+        $(document).ready(function () {
 
             // If the user checks or unchecks the subtask completion marker
             $('.subtask_marker').on('click', function () {
@@ -264,10 +267,11 @@
                             subtaskMarkerClicked(subtask_marker, response.is_task_toggled);
                         }
                         else {
-                            // todo: show message about failure
-                        }
-                    }
+                        // todo: show message about failure
+                           }
+                       }
                 });
             });
         })
+        </script>
     {% endblock javascript %}

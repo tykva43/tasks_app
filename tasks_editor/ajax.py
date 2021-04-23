@@ -178,6 +178,7 @@ def update_task(request):
         task_pk = request.POST['task_pk']
         data = json.loads(request.POST['json_data'])
         values = data['values']
+
         if Task.objects.filter(id=task_pk, group__users__id=user_id).update(**values) > 0:
             is_successful = True
         else:

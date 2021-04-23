@@ -143,6 +143,13 @@ a {
 .group_elem:hover {
     background-color: rgb(230, 230, 230);
 }
+.group_elem {
+    position: relative;
+    margin: 0px 10px 0px 10px;
+    display: grid;
+    grid-template-columns: 10% auto 45px;
+    width: 600px;
+}
 .plus_group .group_icon {
     border-style: dotted;
     border-width: 3px;
@@ -152,9 +159,7 @@ a {
     height: 44px;
     width: 44px;
     border-radius: 10%;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 13px;
+    margin: auto;
 }
 .group_icon .vert_div {
     background-color: rgb(180, 180, 180);
@@ -178,10 +183,11 @@ a {
     font-size: 22px;
     margin-top: auto;
     margin-bottom: auto;
-    margin-left: 15px;
-    width: 500px;
+    width: 100%;
 }
-
+.elem_menu .fa-ellipsis-h {
+    margin-top: 15px;
+}/*
 .elem_menu img {
     height: 30px;
     width: 30px;
@@ -189,7 +195,7 @@ a {
     padding: 7px;
     margin: 13px;
     border-radius: 10%;
-}
+}*/
 .group_menu img:hover {
     background-color: rgb(190, 190, 190);
 }
@@ -523,10 +529,6 @@ textarea::-webkit-scrollbar-track {
 .form_as_table table tbody tr th {
     text-align: -webkit-left;
 }
-/*.form_as_table p {
-    justify-content: space-between;
-    display: flex;
-}*/
 .form_as_table table tbody tr th label {
     font-weight: normal;
 }
@@ -609,4 +611,10 @@ input {
     background-size: 80px;
     margin: auto;
     display: block;
+}
+.active_task {
+    background-color: #c882ac;;
+}
+.expander_wrapper {
+    transition: 0.5s linear;
 }

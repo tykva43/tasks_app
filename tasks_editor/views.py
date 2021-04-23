@@ -15,55 +15,6 @@ from .forms import RegistrationForm, GroupForm, TaskListForm, TaskForm
 HOST_ADDRESS = "192.168.0.102:8080"
 
 
-# @method_decorator(login_required, name='dispatch')
-# class TasksEditorView(APIView):
-#
-#     def post(self, request, group_id):
-#         task_form = TaskForm(request.POST)
-#         if task_form.is_valid():
-#             task = task_form.save(commit=False)
-#             task.user_id = request.user.id
-#             task.group_id = group_id
-#             task.save()
-#         tasks = Task.objects.filter(user_id=request.user.id)            #!!! Обращение к модели
-#         return render(request, "add.html", context={"tasks": tasks, "form": TaskForm()})
-#
-#     def get(self, request, task_id=None, group_id=None):
-#         context = {}
-#         template = ""
-#         if task_id:
-#             response = requests.get('http://{}/api/tasks/{}/?user_id={}'.format(HOST_ADDRESS, str(task_id),
-#                                                                                 str(request.user.id)))
-#             chosen_task = response.json()
-#             response = requests.get('http://{}/api/tasks/?user_id={}'.format(HOST_ADDRESS, str(request.user.id)))
-#             all_tasks = response.json()
-#             template = "group/groups.html"
-#             context = {"tasks": all_tasks, "chosen_task": chosen_task}
-#         else:
-#             private_groups = Group.objects.filter(users__id=request.user.id, type="pri")        #!!! Обращение к модели
-#             public_groups = Group.objects.filter(users__id=request.user.id, type="pub")
-#             tasks = Task.objects.filter(user_id=request.user.id)
-#             template = "group/groups.html"
-#             context = {"tasks": tasks, "private_groups": private_groups, "public_groups": public_groups}
-#         if group_id:
-#             response = requests.get('http://{}/api/tasks/?user_id={}'.format(HOST_ADDRESS, str(request.user.id)))
-#             tasks = response.json()
-#             template = "add.html"
-#             context = {"tasks": tasks, "form": TaskForm()}
-#         print(template)
-#         print(context)
-#         return render(request, "group/groups.html", context=context)
-#
-#     def put(self, request, task_id):
-#         response = requests.put('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)), request)
-#         # todo: send put data
-#         return JsonResponse(data=response.GET.get('message'), status=response.status_code)
-#
-#     def delete(self, request, task_id):
-#         response = requests.delete('http://{}/api/tasks/{}/'.format(HOST_ADDRESS, str(task_id)))
-#         return JsonResponse(data=response.GET.get('message'), status=response.status_code)
-
-
 class RegistrationView(UserPassesTestMixin, CreateView):
     model = User
     template_name = 'registration/registration.html'
