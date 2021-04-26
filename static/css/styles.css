@@ -150,6 +150,13 @@ a {
     grid-template-columns: 10% auto 45px;
     width: 600px;
 }
+.elem_menu .fa-ellipsis-h {
+    padding: 2px;
+    border-radius: 5px;
+}
+.elem_menu .fa-ellipsis-h:hover {
+    background-color: rgb(204, 204, 204);
+}
 .plus_group .group_icon {
     border-style: dotted;
     border-width: 3px;
@@ -187,15 +194,7 @@ a {
 }
 .elem_menu .fa-ellipsis-h {
     margin-top: 15px;
-}/*
-.elem_menu img {
-    height: 30px;
-    width: 30px;
-    opacity: 0.5;
-    padding: 7px;
-    margin: 13px;
-    border-radius: 10%;
-}*/
+}
 .group_menu img:hover {
     background-color: rgb(190, 190, 190);
 }
@@ -417,7 +416,7 @@ a.link img {
     cursor: pointer;
 }
 .task_expander {
-    /*margin-left: 35px;*/
+
 }
 .subtask_block {
     margin-left: 50px;
@@ -544,10 +543,6 @@ textarea {
 input:invalid {
   background-color: #ffc8cd;
 }
-
-/*input:valid, textarea:valid {
-  background-color: #0fff83;
-}*/
 input {
     border-style: solid;
     border-width: thin;

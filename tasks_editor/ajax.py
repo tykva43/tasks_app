@@ -14,7 +14,7 @@ def validate_username(request):
     """Check username availability"""
     username = request.GET.get('username', None)
 
-    response = {  # !!! Обращение к модели
+    response = {
         'is_valid': not User.objects.filter(username=username).exists() and len(username) > 0
     }
     return JsonResponse(response)
@@ -33,7 +33,7 @@ def validate_email(request):
     """Check email availability"""
     email = request.GET.get('email', None)
 
-    response = {  # !!! Обращение к модели
+    response = {
         'is_valid': not User.objects.filter(email=email).exists() and is_email_valid(email)
     }
     return JsonResponse(response)

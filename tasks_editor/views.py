@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import PasswordResetView
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -13,6 +13,10 @@ from task.models import Group, TaskList, User
 from .forms import RegistrationForm, GroupForm, TaskListForm, TaskForm
 
 HOST_ADDRESS = "192.168.0.102:8080"
+
+
+def redirect_main(request):
+    return HttpResponseRedirect(reverse('list_group'))
 
 
 class RegistrationView(UserPassesTestMixin, CreateView):
@@ -46,15 +50,8 @@ class AddGroup(CreateView):
     def get_success_url(self, **kwargs):
         if kwargs is not None:
             return reverse_lazy('detail_group', kwargs={'group_pk': self.object.id})
-    # success_url = reverse_lazy('detail_group', kwargs={'pk': self.appointment_id})
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = 'Group Creation'
-    #     return context
 
 
-# Страница с подробностями конкретной группы
 @method_decorator(login_required, name='dispatch')
 class DetailGroup(DetailView):
     model = Group
@@ -97,7 +94,7 @@ class GroupView(ListView):
         return context
 
     def get_queryset(self):
-        return Group.objects.filter(users=self.request.user.id)  # !!! Обращение к модели
+        return Group.objects.filter(users=self.request.user.id)
 
 
 # ********* Password Reset *********
@@ -138,7 +135,7 @@ class CreateTaskList(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        group = Group.objects.get(id=self.kwargs['group_pk'])  # !!! Обращение к модели
+        group = Group.objects.get(id=self.kwargs['group_pk'])
         form.instance.group = group
         self.object.save()
         return super(CreateTaskList, self).form_valid(form)
