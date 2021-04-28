@@ -22,8 +22,6 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'g_zsed!@*@cs$&_vm31ige+w571(0lp9yskupcnwr8&cf_cxn-'
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '_72rs+j1a7!u*c)c5)-ux5i*5%^p8feujpbpotd9xz_#+_p&9')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -156,3 +154,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 WHITENOISE_USE_FINDERS = True
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
